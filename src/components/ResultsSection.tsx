@@ -19,6 +19,8 @@ interface KeywordResult {
   competition: "low" | "medium" | "high";
   cpc: number;
   trend: "up" | "down" | "stable";
+  searchIntent?: "commercial" | "informational" | "transactional";
+  seoNotes?: string;
 }
 
 interface AnalysisData {
@@ -47,6 +49,20 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     );
   };
 
+  const getSearchIntentBadge = (intent?: string) => {
+    const labels = {
+      commercial: { label: "تجارية", class: "bg-blue-500/20 text-blue-600" },
+      informational: { label: "معلوماتية", class: "bg-purple-500/20 text-purple-600" },
+      transactional: { label: "شرائية", class: "bg-emerald-500/20 text-emerald-600" },
+    };
+    const intentData = labels[intent as keyof typeof labels] || labels.informational;
+    return (
+      <span className={`${intentData.class} px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap`}>
+        {intentData.label}
+      </span>
+    );
+  };
+
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
@@ -59,8 +75,29 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
   };
 
   const handleDownload = () => {
-    // Create CSV content
-    const headers = ['الكلمة المفتاحية', 'عنوان SEO', 'وصف Meta', 'حجم البحث', 'المنافسة', 'تكلفة النقرة', 'الاتجاه'];
+    // Create CSV content with all columns
+    const headers = [
+      'الكلمة المفتاحية الرئيسية',
+      'عنوان SEO',
+      'وصف Meta',
+      'حجم البحث الشهري',
+      'مستوى المنافسة',
+      'نية البحث',
+      'تكلفة النقرة',
+      'اتجاه الطلب',
+      'ملاحظات تحسين SEO'
+    ];
+    
+    const getIntentLabel = (intent?: string) => {
+      const labels = { commercial: 'تجارية', informational: 'معلوماتية', transactional: 'شرائية' };
+      return labels[intent as keyof typeof labels] || 'معلوماتية';
+    };
+    
+    const getTrendLabel = (trend: string) => {
+      const labels = { up: 'صاعد ↑', down: 'نازل ↓', stable: 'ثابت →' };
+      return labels[trend as keyof typeof labels] || 'ثابت →';
+    };
+    
     const csvContent = [
       headers.join(','),
       ...results.map(r => [
@@ -69,8 +106,10 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
         `"${r.metaDescription}"`,
         r.searchVolume,
         r.competition === 'low' ? 'منخفضة' : r.competition === 'medium' ? 'متوسطة' : 'مرتفعة',
+        getIntentLabel(r.searchIntent),
         `${r.cpc} ر.س`,
-        r.trend === 'up' ? 'صاعد' : r.trend === 'down' ? 'نازل' : 'ثابت'
+        getTrendLabel(r.trend),
+        `"${r.seoNotes || 'استهداف الكلمة في العنوان والوصف'}"`
       ].join(','))
     ].join('\n');
 
@@ -78,7 +117,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'keyrank-report.csv';
+    link.download = 'keyrank-seo-report.csv';
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -192,47 +231,61 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-card rounded-2xl shadow-card border border-border/50 overflow-hidden"
         >
-          <div className="overflow-x-auto">
-            <Table>
+          <div className="overflow-x-auto professional-table">
+            <Table className="border-collapse w-full min-w-[1200px]">
               <TableHeader>
-                <TableRow className="table-header">
-                  <TableHead className="text-primary-foreground font-bold">الكلمة المفتاحية</TableHead>
-                  <TableHead className="text-primary-foreground font-bold">عنوان SEO</TableHead>
-                  <TableHead className="text-primary-foreground font-bold">وصف Meta</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center">حجم البحث</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center">المنافسة</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center">تكلفة النقرة</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center">الاتجاه</TableHead>
+                <TableRow className="table-header border-b-2 border-primary/30">
+                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">الكلمة المفتاحية الرئيسية</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">عنوان SEO</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">وصف Meta</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">حجم البحث الشهري</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">مستوى المنافسة</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">نية البحث</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">تكلفة النقرة</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">اتجاه الطلب</TableHead>
+                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">ملاحظات تحسين SEO</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {results.map((result, index) => (
                   <TableRow 
                     key={index}
-                    className="hover:bg-muted/50 transition-colors"
+                    className={`hover:bg-muted/50 transition-colors ${index % 2 === 0 ? 'bg-muted/20' : 'bg-card'}`}
                   >
-                    <TableCell className="font-bold text-primary">
+                    <TableCell className="font-bold text-primary border border-border/50 py-3 px-4 text-right">
                       {result.keyword}
                     </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {result.seoTitle}
+                    <TableCell className="border border-border/50 py-3 px-4 text-right max-w-[200px]">
+                      <span className="line-clamp-2">{result.seoTitle}</span>
                     </TableCell>
-                    <TableCell className="max-w-[250px] truncate text-muted-foreground">
-                      {result.metaDescription}
+                    <TableCell className="text-muted-foreground border border-border/50 py-3 px-4 text-right max-w-[250px]">
+                      <span className="line-clamp-2">{result.metaDescription}</span>
                     </TableCell>
-                    <TableCell className="text-center font-medium">
-                      {result.searchVolume.toLocaleString("ar-SA")}
+                    <TableCell className="text-center font-medium border border-border/50 py-3 px-3">
+                      <span className="text-lg font-bold text-primary">{result.searchVolume.toLocaleString("ar-SA")}</span>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center border border-border/50 py-3 px-3">
                       {getCompetitionBadge(result.competition)}
                     </TableCell>
-                    <TableCell className="text-center font-medium">
+                    <TableCell className="text-center border border-border/50 py-3 px-3">
+                      {getSearchIntentBadge(result.searchIntent)}
+                    </TableCell>
+                    <TableCell className="text-center font-medium border border-border/50 py-3 px-3 whitespace-nowrap">
                       {result.cpc.toFixed(2)} ر.س
                     </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex justify-center">
+                    <TableCell className="text-center border border-border/50 py-3 px-3">
+                      <div className="flex justify-center items-center gap-1">
                         {getTrendIcon(result.trend)}
+                        <span className={`text-sm font-medium ${
+                          result.trend === 'up' ? 'text-emerald-500' : 
+                          result.trend === 'down' ? 'text-rose-500' : 'text-muted-foreground'
+                        }`}>
+                          {result.trend === 'up' ? 'صاعد' : result.trend === 'down' ? 'نازل' : 'ثابت'}
+                        </span>
                       </div>
+                    </TableCell>
+                    <TableCell className="border border-border/50 py-3 px-4 text-right text-sm text-muted-foreground max-w-[200px]">
+                      <span className="line-clamp-2">{result.seoNotes || 'استهداف الكلمة في العنوان والوصف مع الروابط الداخلية'}</span>
                     </TableCell>
                   </TableRow>
                 ))}
