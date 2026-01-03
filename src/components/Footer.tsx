@@ -11,7 +11,7 @@ const Footer = () => {
               <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-xl">K</span>
               </div>
-              <span className="text-2xl font-bold">KeySaudi</span>
+              <span className="text-2xl font-bold">KeyRank</span>
             </div>
             <p className="text-primary-foreground/70 leading-relaxed max-w-md">
               أداة تحليل السوق السعودي الأولى من نوعها. نساعدك على اكتشاف الكلمات المفتاحية الذهبية 
@@ -28,8 +28,18 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/features" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  المميزات
+                <Link to="/about" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  من نحن
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  الخدمات
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  المدونة
                 </Link>
               </li>
               <li>
@@ -49,13 +59,13 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-6">تواصل معنا</h4>
             <ul className="space-y-3">
               <li className="text-primary-foreground/70">
-                البريد: info@keysaudi.com
+                البريد: info@keyrank.sa
               </li>
               <li className="text-primary-foreground/70">
-                الهاتف: +966 50 000 0000
+                الهاتف: 0566175512
               </li>
               <li className="text-primary-foreground/70">
-                الرياض، المملكة العربية السعودية
+                جدة، المملكة العربية السعودية
               </li>
             </ul>
           </div>
@@ -63,7 +73,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
           <p className="text-primary-foreground/60">
-            © 2024 KeySaudi. جميع الحقوق محفوظة.
+            © 2024 KeyRank. جميع الحقوق محفوظة.
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <WhatsAppButton />
       
       <section className="pt-32 pb-24">
         <div className="container mx-auto px-4">
@@ -54,8 +56,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-1">البريد الإلكتروني</h3>
-                    <p className="text-muted-foreground">info@keysaudi.com</p>
-                    <p className="text-muted-foreground">support@keysaudi.com</p>
+                    <p className="text-muted-foreground">info@keyrank.sa</p>
+                    <p className="text-muted-foreground">support@keyrank.sa</p>
                   </div>
                 </div>
 
@@ -65,8 +67,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-1">الهاتف</h3>
-                    <p className="text-muted-foreground">+966 50 000 0000</p>
-                    <p className="text-muted-foreground">+966 11 000 0000</p>
+                    <p className="text-muted-foreground">0566175512</p>
                   </div>
                 </div>
 
@@ -76,8 +77,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold text-lg mb-1">العنوان</h3>
-                    <p className="text-muted-foreground">الرياض، المملكة العربية السعودية</p>
-                    <p className="text-muted-foreground">طريق الملك فهد، برج المملكة</p>
+                    <p className="text-muted-foreground">جدة، المملكة العربية السعودية</p>
                   </div>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <WhatsAppButton />
       
       <section className="pt-32 pb-24">
         <div className="container mx-auto px-4">
