@@ -70,6 +70,8 @@ serve(async (req) => {
 5. اتجاه الطلب (صاعد/نازل/ثابت)
 6. عنوان SEO مقترح لكل كلمة
 7. وصف ميتا مقترح لكل كلمة
+8. نية البحث (تجارية/معلوماتية/شرائية)
+9. ملاحظات تحسين SEO لكل كلمة
 
 اعتبر المواسم السعودية المهمة مثل:
 - رمضان والعيد
@@ -92,13 +94,15 @@ ${websiteContent ? `محتوى الموقع:\n${websiteContent.substring(0, 3000
 {
   "keywords": [
     {
-      "keyword": "الكلمة المفتاحية",
+      "keyword": "الكلمة المفتاحية الرئيسية",
       "seoTitle": "عنوان SEO مقترح (أقل من 60 حرف)",
       "metaDescription": "وصف ميتا مقترح (أقل من 160 حرف)",
       "searchVolume": 12000,
       "competition": "low|medium|high",
       "cpc": 2.50,
-      "trend": "up|down|stable"
+      "trend": "up|down|stable",
+      "searchIntent": "commercial|informational|transactional",
+      "seoNotes": "ملاحظات تحسين SEO مثل: استخدم الكلمة في H1، أضف صور محسنة، اربط بصفحات داخلية"
     }
   ],
   "analysis": {
