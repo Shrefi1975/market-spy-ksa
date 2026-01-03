@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -21,11 +21,19 @@ interface KeywordResult {
   trend: "up" | "down" | "stable";
 }
 
-interface ResultsSectionProps {
-  results: KeywordResult[];
+interface AnalysisData {
+  marketOverview?: string;
+  opportunities?: string[];
+  recommendations?: string[];
+  seasonalTips?: string[];
 }
 
-const ResultsSection: React.FC<ResultsSectionProps> = ({ results }) => {
+interface ResultsSectionProps {
+  results: KeywordResult[];
+  analysis?: AnalysisData;
+}
+
+const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) => {
   const getCompetitionBadge = (competition: string) => {
     const labels = {
       low: "منخفضة",
@@ -50,6 +58,31 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results }) => {
     }
   };
 
+  const handleDownload = () => {
+    // Create CSV content
+    const headers = ['الكلمة المفتاحية', 'عنوان SEO', 'وصف Meta', 'حجم البحث', 'المنافسة', 'تكلفة النقرة', 'الاتجاه'];
+    const csvContent = [
+      headers.join(','),
+      ...results.map(r => [
+        `"${r.keyword}"`,
+        `"${r.seoTitle}"`,
+        `"${r.metaDescription}"`,
+        r.searchVolume,
+        r.competition === 'low' ? 'منخفضة' : r.competition === 'medium' ? 'متوسطة' : 'مرتفعة',
+        `${r.cpc} ر.س`,
+        r.trend === 'up' ? 'صاعد' : r.trend === 'down' ? 'نازل' : 'ثابت'
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'keyrank-report.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   if (results.length === 0) return null;
 
   return (
@@ -69,6 +102,88 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results }) => {
             الكلمات المفتاحية المقترحة بناءً على تحليل السوق السعودي
           </p>
         </motion.div>
+
+        {/* Analysis Insights */}
+        {analysis && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          >
+            {analysis.marketOverview && (
+              <div className="bg-card rounded-2xl p-6 border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                  <h3 className="font-bold text-lg">نظرة السوق</h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {analysis.marketOverview}
+                </p>
+              </div>
+            )}
+
+            {analysis.opportunities && analysis.opportunities.length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <Target className="w-6 h-6 text-green-500" />
+                  </div>
+                  <h3 className="font-bold text-lg">الفرص</h3>
+                </div>
+                <ul className="space-y-2">
+                  {analysis.opportunities.slice(0, 3).map((opp, i) => (
+                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                      <span className="text-green-500 mt-1">•</span>
+                      {opp}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {analysis.recommendations && analysis.recommendations.length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                    <Lightbulb className="w-6 h-6 text-blue-500" />
+                  </div>
+                  <h3 className="font-bold text-lg">التوصيات</h3>
+                </div>
+                <ul className="space-y-2">
+                  {analysis.recommendations.slice(0, 3).map((rec, i) => (
+                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      {rec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {analysis.seasonalTips && analysis.seasonalTips.length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <h3 className="font-bold text-lg">نصائح موسمية</h3>
+                </div>
+                <ul className="space-y-2">
+                  {analysis.seasonalTips.slice(0, 3).map((tip, i) => (
+                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                      <span className="text-amber-500 mt-1">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -133,7 +248,10 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results }) => {
           transition={{ duration: 0.4, delay: 0.4 }}
           className="text-center mt-8"
         >
-          <Button className="h-14 px-10 text-lg font-bold gradient-bg rounded-xl shadow-glow hover:shadow-soft transition-all duration-300">
+          <Button 
+            onClick={handleDownload}
+            className="h-14 px-10 text-lg font-bold gradient-bg rounded-xl shadow-glow hover:shadow-soft transition-all duration-300"
+          >
             <Download className="w-5 h-5 ml-2" />
             تنزيل التقرير الكامل
           </Button>
