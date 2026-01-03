@@ -75,49 +75,77 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
   };
 
   const handleDownload = () => {
-    // Create CSV content with all columns
+    // Remove duplicates based on keyword
+    const uniqueResults = results.filter((result, index, self) =>
+      index === self.findIndex(r => r.keyword === result.keyword)
+    );
+
+    // Create professional CSV headers with proper order (RTL)
     const headers = [
       'الكلمة المفتاحية الرئيسية',
       'عنوان SEO',
       'وصف Meta',
       'حجم البحث الشهري',
       'مستوى المنافسة',
-      'نية البحث',
-      'تكلفة النقرة',
-      'اتجاه الطلب',
+      'نية البحث (تجارية / معلوماتية / شرائية)',
       'ملاحظات تحسين SEO'
     ];
     
+    const getCompetitionLabel = (competition: string) => {
+      const labels = { low: 'منخفضة ✓', medium: 'متوسطة ⚡', high: 'مرتفعة ⚠' };
+      return labels[competition as keyof typeof labels] || 'متوسطة';
+    };
+
     const getIntentLabel = (intent?: string) => {
-      const labels = { commercial: 'تجارية', informational: 'معلوماتية', transactional: 'شرائية' };
-      return labels[intent as keyof typeof labels] || 'معلوماتية';
+      const labels = { commercial: 'تجارية 💼', informational: 'معلوماتية 📚', transactional: 'شرائية 🛒' };
+      return labels[intent as keyof typeof labels] || 'معلوماتية 📚';
+    };
+
+    // Escape CSV values properly
+    const escapeCSV = (value: string) => {
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return `"${value}"`;
     };
     
-    const getTrendLabel = (trend: string) => {
-      const labels = { up: 'صاعد ↑', down: 'نازل ↓', stable: 'ثابت →' };
-      return labels[trend as keyof typeof labels] || 'ثابت →';
-    };
-    
+    const csvRows = uniqueResults.map(r => [
+      escapeCSV(r.keyword),
+      escapeCSV(r.seoTitle),
+      escapeCSV(r.metaDescription),
+      r.searchVolume.toLocaleString('ar-SA'),
+      getCompetitionLabel(r.competition),
+      getIntentLabel(r.searchIntent),
+      escapeCSV(r.seoNotes || 'استهداف الكلمة المفتاحية في العنوان والوصف والمحتوى مع بناء روابط داخلية قوية')
+    ].join(','));
+
+    // Add title and metadata
+    const reportTitle = '═══════════════════════════════════════════════════════════════';
+    const reportHeader = '📊 تقرير تحليل الكلمات المفتاحية - KeyRank SEO';
+    const reportDate = `📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+    const totalKeywords = `📈 إجمالي الكلمات المفتاحية: ${uniqueResults.length}`;
+    const separator = '───────────────────────────────────────────────────────────────';
+
     const csvContent = [
+      reportTitle,
+      reportHeader,
+      reportDate,
+      totalKeywords,
+      separator,
+      '',
       headers.join(','),
-      ...results.map(r => [
-        `"${r.keyword}"`,
-        `"${r.seoTitle}"`,
-        `"${r.metaDescription}"`,
-        r.searchVolume,
-        r.competition === 'low' ? 'منخفضة' : r.competition === 'medium' ? 'متوسطة' : 'مرتفعة',
-        getIntentLabel(r.searchIntent),
-        `${r.cpc} ر.س`,
-        getTrendLabel(r.trend),
-        `"${r.seoNotes || 'استهداف الكلمة في العنوان والوصف'}"`
-      ].join(','))
+      ...csvRows,
+      '',
+      separator,
+      '✅ نهاية التقرير - KeyRank SEO | أداة تحليل الكلمات المفتاحية للسوق السعودي'
     ].join('\n');
 
+    // Add BOM for proper RTL display in Excel
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'keyrank-seo-report.csv';
+    link.download = `keyrank-seo-report-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
