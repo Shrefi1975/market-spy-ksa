@@ -5,7 +5,9 @@ import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { useToast } from "@/hooks/use-toast";
 
 interface KeywordResult {
@@ -104,11 +106,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <WhatsAppButton />
       <HeroSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <FeaturesSection />
       <HowItWorksSection />
       <ResultsSection results={results} />
       <TestimonialsSection />
+      <PricingSection />
       <Footer />
     </div>
   );
