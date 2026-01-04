@@ -1,7 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3 } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 import {
   Table,
   TableBody,
@@ -10,6 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+// Extend jsPDF type for autoTable
+declare module "jspdf" {
+  interface jsPDF {
+    autoTable: (options: any) => jsPDF;
+  }
+}
 
 interface KeywordResult {
   keyword: string;
@@ -28,6 +37,8 @@ interface AnalysisData {
   opportunities?: string[];
   recommendations?: string[];
   seasonalTips?: string[];
+  competitorInsights?: string;
+  targetAudience?: string;
 }
 
 interface ResultsSectionProps {
@@ -74,80 +85,311 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     }
   };
 
-  const handleDownload = () => {
+  const handleDownloadPDF = () => {
     // Remove duplicates based on keyword
     const uniqueResults = results.filter((result, index, self) =>
       index === self.findIndex(r => r.keyword === result.keyword)
     );
 
-    // Create professional CSV headers with proper order (RTL)
-    const headers = [
-      'الكلمة المفتاحية الرئيسية',
-      'عنوان SEO',
-      'وصف Meta',
-      'حجم البحث الشهري',
-      'مستوى المنافسة',
-      'نية البحث (تجارية / معلوماتية / شرائية)',
-      'ملاحظات تحسين SEO'
-    ];
+    // Create PDF document
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Add Arabic font support - using built-in font with RTL support
+    doc.setR2L(true);
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+
+    // Header background
+    doc.setFillColor(99, 102, 241); // Indigo color
+    doc.rect(0, 0, pageWidth, 45, 'F');
+
+    // Logo and Title
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(28);
+    doc.text('KeyRank SEO', pageWidth - margin, 20, { align: 'right' });
     
+    doc.setFontSize(14);
+    doc.text('تقرير تحليل الكلمات المفتاحية للسوق السعودي', pageWidth - margin, 32, { align: 'right' });
+
+    // Date and stats bar
+    doc.setFillColor(79, 70, 229); // Darker indigo
+    doc.rect(0, 45, pageWidth, 12, 'F');
+    
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    const dateStr = new Date().toLocaleDateString('ar-SA', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      weekday: 'long'
+    });
+    doc.text(`تاريخ التقرير: ${dateStr}`, pageWidth - margin, 52, { align: 'right' });
+    doc.text(`إجمالي الكلمات المفتاحية: ${uniqueResults.length}`, margin + 60, 52, { align: 'right' });
+
+    let yPosition = 65;
+
+    // Analysis Section if available
+    if (analysis) {
+      doc.setFontSize(14);
+      doc.setTextColor(99, 102, 241);
+      doc.text('تحليل السوق والتوصيات', pageWidth - margin, yPosition, { align: 'right' });
+      yPosition += 8;
+
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+
+      if (analysis.marketOverview) {
+        doc.setFontSize(11);
+        doc.setTextColor(99, 102, 241);
+        doc.text('نظرة عامة على السوق:', pageWidth - margin, yPosition, { align: 'right' });
+        yPosition += 6;
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        const overviewLines = doc.splitTextToSize(analysis.marketOverview, pageWidth - (margin * 2));
+        doc.text(overviewLines, pageWidth - margin, yPosition, { align: 'right' });
+        yPosition += overviewLines.length * 5 + 5;
+      }
+
+      // Opportunities and Recommendations in columns
+      if (analysis.opportunities && analysis.opportunities.length > 0) {
+        doc.setFontSize(11);
+        doc.setTextColor(34, 197, 94); // Green
+        doc.text('الفرص:', pageWidth - margin, yPosition, { align: 'right' });
+        yPosition += 5;
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        analysis.opportunities.forEach((opp, i) => {
+          doc.text(`${i + 1}. ${opp}`, pageWidth - margin - 5, yPosition, { align: 'right' });
+          yPosition += 5;
+        });
+        yPosition += 3;
+      }
+
+      if (analysis.recommendations && analysis.recommendations.length > 0) {
+        doc.setFontSize(11);
+        doc.setTextColor(59, 130, 246); // Blue
+        doc.text('التوصيات:', pageWidth - margin, yPosition, { align: 'right' });
+        yPosition += 5;
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        analysis.recommendations.forEach((rec, i) => {
+          doc.text(`${i + 1}. ${rec}`, pageWidth - margin - 5, yPosition, { align: 'right' });
+          yPosition += 5;
+        });
+        yPosition += 3;
+      }
+
+      if (analysis.seasonalTips && analysis.seasonalTips.length > 0) {
+        doc.setFontSize(11);
+        doc.setTextColor(245, 158, 11); // Amber
+        doc.text('نصائح موسمية:', pageWidth - margin, yPosition, { align: 'right' });
+        yPosition += 5;
+        doc.setFontSize(9);
+        doc.setTextColor(80, 80, 80);
+        analysis.seasonalTips.forEach((tip, i) => {
+          doc.text(`${i + 1}. ${tip}`, pageWidth - margin - 5, yPosition, { align: 'right' });
+          yPosition += 5;
+        });
+        yPosition += 5;
+      }
+    }
+
+    // Add new page for keywords table
+    doc.addPage();
+
+    // Table header
+    doc.setFillColor(99, 102, 241);
+    doc.rect(0, 0, pageWidth, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text('جدول الكلمات المفتاحية', pageWidth - margin, 13, { align: 'right' });
+
+    // Prepare table data
     const getCompetitionLabel = (competition: string) => {
-      const labels = { low: 'منخفضة ✓', medium: 'متوسطة ⚡', high: 'مرتفعة ⚠' };
+      const labels = { low: 'منخفضة', medium: 'متوسطة', high: 'مرتفعة' };
       return labels[competition as keyof typeof labels] || 'متوسطة';
     };
 
     const getIntentLabel = (intent?: string) => {
-      const labels = { commercial: 'تجارية 💼', informational: 'معلوماتية 📚', transactional: 'شرائية 🛒' };
-      return labels[intent as keyof typeof labels] || 'معلوماتية 📚';
+      const labels = { commercial: 'تجارية', informational: 'معلوماتية', transactional: 'شرائية' };
+      return labels[intent as keyof typeof labels] || 'معلوماتية';
     };
 
-    // Escape CSV values properly
-    const escapeCSV = (value: string) => {
-      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-        return `"${value.replace(/"/g, '""')}"`;
-      }
-      return `"${value}"`;
+    const getTrendLabel = (trend: string) => {
+      const labels = { up: 'صاعد ↑', down: 'نازل ↓', stable: 'ثابت →' };
+      return labels[trend as keyof typeof labels] || 'ثابت →';
     };
-    
-    const csvRows = uniqueResults.map(r => [
-      escapeCSV(r.keyword),
-      escapeCSV(r.seoTitle),
-      escapeCSV(r.metaDescription),
-      r.searchVolume.toLocaleString('ar-SA'),
-      getCompetitionLabel(r.competition),
+
+    const tableData = uniqueResults.map((r, index) => [
+      r.seoNotes || 'استهداف الكلمة في العنوان والوصف',
+      getTrendLabel(r.trend),
+      `${r.cpc.toFixed(2)} ر.س`,
       getIntentLabel(r.searchIntent),
-      escapeCSV(r.seoNotes || 'استهداف الكلمة المفتاحية في العنوان والوصف والمحتوى مع بناء روابط داخلية قوية')
-    ].join(','));
+      getCompetitionLabel(r.competition),
+      r.searchVolume.toLocaleString('ar-SA'),
+      r.metaDescription.substring(0, 60) + '...',
+      r.seoTitle.substring(0, 40) + '...',
+      r.keyword,
+      (index + 1).toString()
+    ]);
 
-    // Add title and metadata
-    const reportTitle = '═══════════════════════════════════════════════════════════════';
-    const reportHeader = '📊 تقرير تحليل الكلمات المفتاحية - KeyRank SEO';
-    const reportDate = `📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}`;
-    const totalKeywords = `📈 إجمالي الكلمات المفتاحية: ${uniqueResults.length}`;
-    const separator = '───────────────────────────────────────────────────────────────';
+    // Create table with professional styling
+    doc.autoTable({
+      startY: 25,
+      head: [[
+        'ملاحظات SEO',
+        'الاتجاه',
+        'تكلفة النقرة',
+        'نية البحث',
+        'المنافسة',
+        'حجم البحث',
+        'وصف Meta',
+        'عنوان SEO',
+        'الكلمة المفتاحية',
+        '#'
+      ]],
+      body: tableData,
+      styles: {
+        font: 'helvetica',
+        fontSize: 8,
+        cellPadding: 3,
+        halign: 'right',
+        valign: 'middle',
+        lineColor: [200, 200, 200],
+        lineWidth: 0.1,
+      },
+      headStyles: {
+        fillColor: [99, 102, 241],
+        textColor: [255, 255, 255],
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'center',
+      },
+      alternateRowStyles: {
+        fillColor: [245, 247, 250],
+      },
+      columnStyles: {
+        0: { cellWidth: 35 },
+        1: { cellWidth: 18, halign: 'center' },
+        2: { cellWidth: 20, halign: 'center' },
+        3: { cellWidth: 18, halign: 'center' },
+        4: { cellWidth: 18, halign: 'center' },
+        5: { cellWidth: 20, halign: 'center' },
+        6: { cellWidth: 45 },
+        7: { cellWidth: 35 },
+        8: { cellWidth: 30, fontStyle: 'bold' },
+        9: { cellWidth: 10, halign: 'center' },
+      },
+      margin: { top: 25, right: margin, bottom: 25, left: margin },
+      didDrawPage: (data: any) => {
+        // Footer on each page
+        doc.setFillColor(245, 247, 250);
+        doc.rect(0, pageHeight - 15, pageWidth, 15, 'F');
+        doc.setFontSize(8);
+        doc.setTextColor(120, 120, 120);
+        doc.text('KeyRank SEO - أداة تحليل الكلمات المفتاحية للسوق السعودي', pageWidth / 2, pageHeight - 7, { align: 'center' });
+        doc.text(`صفحة ${data.pageNumber}`, margin, pageHeight - 7);
+      }
+    });
 
-    const csvContent = [
-      reportTitle,
-      reportHeader,
-      reportDate,
-      totalKeywords,
-      separator,
-      '',
-      headers.join(','),
-      ...csvRows,
-      '',
-      separator,
-      '✅ نهاية التقرير - KeyRank SEO | أداة تحليل الكلمات المفتاحية للسوق السعودي'
-    ].join('\n');
+    // Summary page
+    doc.addPage();
+    
+    // Summary header
+    doc.setFillColor(99, 102, 241);
+    doc.rect(0, 0, pageWidth, 35, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.text('ملخص التقرير', pageWidth - margin, 22, { align: 'right' });
 
-    // Add BOM for proper RTL display in Excel
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `keyrank-seo-report-${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
+    yPosition = 50;
+
+    // Statistics cards
+    const lowComp = uniqueResults.filter(r => r.competition === 'low').length;
+    const medComp = uniqueResults.filter(r => r.competition === 'medium').length;
+    const highComp = uniqueResults.filter(r => r.competition === 'high').length;
+    const avgVolume = Math.round(uniqueResults.reduce((acc, r) => acc + r.searchVolume, 0) / uniqueResults.length);
+    const avgCpc = (uniqueResults.reduce((acc, r) => acc + r.cpc, 0) / uniqueResults.length).toFixed(2);
+    const upTrend = uniqueResults.filter(r => r.trend === 'up').length;
+
+    // Stats boxes
+    const boxWidth = 55;
+    const boxHeight = 35;
+    const boxGap = 10;
+    const startX = pageWidth - margin - boxWidth;
+
+    const stats = [
+      { label: 'إجمالي الكلمات', value: uniqueResults.length.toString(), color: [99, 102, 241] },
+      { label: 'متوسط حجم البحث', value: avgVolume.toLocaleString('ar-SA'), color: [34, 197, 94] },
+      { label: 'متوسط تكلفة النقرة', value: `${avgCpc} ر.س`, color: [245, 158, 11] },
+      { label: 'كلمات صاعدة', value: upTrend.toString(), color: [59, 130, 246] },
+    ];
+
+    stats.forEach((stat, index) => {
+      const xPos = startX - (index * (boxWidth + boxGap));
+      doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
+      doc.roundedRect(xPos, yPosition, boxWidth, boxHeight, 3, 3, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.text(stat.value, xPos + boxWidth / 2, yPosition + 15, { align: 'center' });
+      doc.setFontSize(9);
+      doc.text(stat.label, xPos + boxWidth / 2, yPosition + 26, { align: 'center' });
+    });
+
+    yPosition += 55;
+
+    // Competition breakdown
+    doc.setFontSize(14);
+    doc.setTextColor(60, 60, 60);
+    doc.text('توزيع مستوى المنافسة:', pageWidth - margin, yPosition, { align: 'right' });
+    yPosition += 10;
+
+    // Competition bars
+    const barWidth = 150;
+    const barHeight = 12;
+    const total = uniqueResults.length;
+
+    // Low competition bar
+    doc.setFillColor(200, 200, 200);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
+    doc.setFillColor(34, 197, 94);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (lowComp / total) * barWidth, barHeight, 2, 2, 'F');
+    doc.setFontSize(10);
+    doc.setTextColor(60, 60, 60);
+    doc.text(`منخفضة: ${lowComp} (${Math.round((lowComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
+    yPosition += 18;
+
+    // Medium competition bar
+    doc.setFillColor(200, 200, 200);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
+    doc.setFillColor(245, 158, 11);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (medComp / total) * barWidth, barHeight, 2, 2, 'F');
+    doc.text(`متوسطة: ${medComp} (${Math.round((medComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
+    yPosition += 18;
+
+    // High competition bar
+    doc.setFillColor(200, 200, 200);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
+    doc.setFillColor(239, 68, 68);
+    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (highComp / total) * barWidth, barHeight, 2, 2, 'F');
+    doc.text(`مرتفعة: ${highComp} (${Math.round((highComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
+
+    // Footer
+    doc.setFillColor(99, 102, 241);
+    doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text('KeyRank SEO | أداة تحليل الكلمات المفتاحية الاحترافية للسوق السعودي', pageWidth / 2, pageHeight - 8, { align: 'center' });
+
+    // Save the PDF
+    const fileName = `keyrank-seo-report-${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
   };
 
   if (results.length === 0) return null;
@@ -330,11 +572,11 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           className="text-center mt-8"
         >
           <Button 
-            onClick={handleDownload}
+            onClick={handleDownloadPDF}
             className="h-14 px-10 text-lg font-bold gradient-bg rounded-xl shadow-glow hover:shadow-soft transition-all duration-300"
           >
-            <Download className="w-5 h-5 ml-2" />
-            تنزيل التقرير الكامل
+            <FileText className="w-5 h-5 ml-2" />
+            تنزيل التقرير PDF
           </Button>
         </motion.div>
       </div>
