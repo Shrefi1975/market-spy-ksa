@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -32,6 +32,13 @@ interface KeywordResult {
   seoNotes?: string;
 }
 
+interface Competitor {
+  name: string;
+  website?: string;
+  strengths?: string;
+  weaknesses?: string;
+}
+
 interface AnalysisData {
   marketOverview?: string;
   opportunities?: string[];
@@ -39,6 +46,7 @@ interface AnalysisData {
   seasonalTips?: string[];
   competitorInsights?: string;
   targetAudience?: string;
+  competitors?: Competitor[];
 }
 
 interface ResultsSectionProps {
@@ -86,310 +94,328 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
   };
 
   const handleDownloadPDF = () => {
-    // Remove duplicates based on keyword
-    const uniqueResults = results.filter((result, index, self) =>
-      index === self.findIndex(r => r.keyword === result.keyword)
-    );
+    try {
+      // Remove duplicates based on keyword
+      const uniqueResults = results.filter((result, index, self) =>
+        index === self.findIndex(r => r.keyword === result.keyword)
+      );
 
-    // Create PDF document
-    const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'a4'
-    });
+      // Create PDF document in landscape for better table display
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-    // Add Arabic font support - using built-in font with RTL support
-    doc.setR2L(true);
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 15;
 
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 15;
+      // Helper function to add text with proper alignment
+      const addText = (text: string, x: number, y: number, options?: any) => {
+        doc.text(text, x, y, options);
+      };
 
-    // Header background
-    doc.setFillColor(99, 102, 241); // Indigo color
-    doc.rect(0, 0, pageWidth, 45, 'F');
+      // ===== PAGE 1: Cover & Overview =====
+      // Header background gradient effect
+      doc.setFillColor(99, 102, 241);
+      doc.rect(0, 0, pageWidth, 50, 'F');
+      doc.setFillColor(79, 70, 229);
+      doc.rect(0, 40, pageWidth, 15, 'F');
 
-    // Logo and Title
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(28);
-    doc.text('KeyRank SEO', pageWidth - margin, 20, { align: 'right' });
-    
-    doc.setFontSize(14);
-    doc.text('تقرير تحليل الكلمات المفتاحية للسوق السعودي', pageWidth - margin, 32, { align: 'right' });
-
-    // Date and stats bar
-    doc.setFillColor(79, 70, 229); // Darker indigo
-    doc.rect(0, 45, pageWidth, 12, 'F');
-    
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    const dateStr = new Date().toLocaleDateString('ar-SA', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      weekday: 'long'
-    });
-    doc.text(`تاريخ التقرير: ${dateStr}`, pageWidth - margin, 52, { align: 'right' });
-    doc.text(`إجمالي الكلمات المفتاحية: ${uniqueResults.length}`, margin + 60, 52, { align: 'right' });
-
-    let yPosition = 65;
-
-    // Analysis Section if available
-    if (analysis) {
-      doc.setFontSize(14);
-      doc.setTextColor(99, 102, 241);
-      doc.text('تحليل السوق والتوصيات', pageWidth - margin, yPosition, { align: 'right' });
-      yPosition += 8;
-
-      doc.setFontSize(10);
-      doc.setTextColor(60, 60, 60);
-
-      if (analysis.marketOverview) {
-        doc.setFontSize(11);
-        doc.setTextColor(99, 102, 241);
-        doc.text('نظرة عامة على السوق:', pageWidth - margin, yPosition, { align: 'right' });
-        yPosition += 6;
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        const overviewLines = doc.splitTextToSize(analysis.marketOverview, pageWidth - (margin * 2));
-        doc.text(overviewLines, pageWidth - margin, yPosition, { align: 'right' });
-        yPosition += overviewLines.length * 5 + 5;
-      }
-
-      // Opportunities and Recommendations in columns
-      if (analysis.opportunities && analysis.opportunities.length > 0) {
-        doc.setFontSize(11);
-        doc.setTextColor(34, 197, 94); // Green
-        doc.text('الفرص:', pageWidth - margin, yPosition, { align: 'right' });
-        yPosition += 5;
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        analysis.opportunities.forEach((opp, i) => {
-          doc.text(`${i + 1}. ${opp}`, pageWidth - margin - 5, yPosition, { align: 'right' });
-          yPosition += 5;
-        });
-        yPosition += 3;
-      }
-
-      if (analysis.recommendations && analysis.recommendations.length > 0) {
-        doc.setFontSize(11);
-        doc.setTextColor(59, 130, 246); // Blue
-        doc.text('التوصيات:', pageWidth - margin, yPosition, { align: 'right' });
-        yPosition += 5;
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        analysis.recommendations.forEach((rec, i) => {
-          doc.text(`${i + 1}. ${rec}`, pageWidth - margin - 5, yPosition, { align: 'right' });
-          yPosition += 5;
-        });
-        yPosition += 3;
-      }
-
-      if (analysis.seasonalTips && analysis.seasonalTips.length > 0) {
-        doc.setFontSize(11);
-        doc.setTextColor(245, 158, 11); // Amber
-        doc.text('نصائح موسمية:', pageWidth - margin, yPosition, { align: 'right' });
-        yPosition += 5;
-        doc.setFontSize(9);
-        doc.setTextColor(80, 80, 80);
-        analysis.seasonalTips.forEach((tip, i) => {
-          doc.text(`${i + 1}. ${tip}`, pageWidth - margin - 5, yPosition, { align: 'right' });
-          yPosition += 5;
-        });
-        yPosition += 5;
-      }
-    }
-
-    // Add new page for keywords table
-    doc.addPage();
-
-    // Table header
-    doc.setFillColor(99, 102, 241);
-    doc.rect(0, 0, pageWidth, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.text('جدول الكلمات المفتاحية', pageWidth - margin, 13, { align: 'right' });
-
-    // Prepare table data
-    const getCompetitionLabel = (competition: string) => {
-      const labels = { low: 'منخفضة', medium: 'متوسطة', high: 'مرتفعة' };
-      return labels[competition as keyof typeof labels] || 'متوسطة';
-    };
-
-    const getIntentLabel = (intent?: string) => {
-      const labels = { commercial: 'تجارية', informational: 'معلوماتية', transactional: 'شرائية' };
-      return labels[intent as keyof typeof labels] || 'معلوماتية';
-    };
-
-    const getTrendLabel = (trend: string) => {
-      const labels = { up: 'صاعد ↑', down: 'نازل ↓', stable: 'ثابت →' };
-      return labels[trend as keyof typeof labels] || 'ثابت →';
-    };
-
-    const tableData = uniqueResults.map((r, index) => [
-      r.seoNotes || 'استهداف الكلمة في العنوان والوصف',
-      getTrendLabel(r.trend),
-      `${r.cpc.toFixed(2)} ر.س`,
-      getIntentLabel(r.searchIntent),
-      getCompetitionLabel(r.competition),
-      r.searchVolume.toLocaleString('ar-SA'),
-      r.metaDescription.substring(0, 60) + '...',
-      r.seoTitle.substring(0, 40) + '...',
-      r.keyword,
-      (index + 1).toString()
-    ]);
-
-    // Create table with professional styling
-    doc.autoTable({
-      startY: 25,
-      head: [[
-        'ملاحظات SEO',
-        'الاتجاه',
-        'تكلفة النقرة',
-        'نية البحث',
-        'المنافسة',
-        'حجم البحث',
-        'وصف Meta',
-        'عنوان SEO',
-        'الكلمة المفتاحية',
-        '#'
-      ]],
-      body: tableData,
-      styles: {
-        font: 'helvetica',
-        fontSize: 8,
-        cellPadding: 3,
-        halign: 'right',
-        valign: 'middle',
-        lineColor: [200, 200, 200],
-        lineWidth: 0.1,
-      },
-      headStyles: {
-        fillColor: [99, 102, 241],
-        textColor: [255, 255, 255],
-        fontSize: 9,
-        fontStyle: 'bold',
-        halign: 'center',
-      },
-      alternateRowStyles: {
-        fillColor: [245, 247, 250],
-      },
-      columnStyles: {
-        0: { cellWidth: 35 },
-        1: { cellWidth: 18, halign: 'center' },
-        2: { cellWidth: 20, halign: 'center' },
-        3: { cellWidth: 18, halign: 'center' },
-        4: { cellWidth: 18, halign: 'center' },
-        5: { cellWidth: 20, halign: 'center' },
-        6: { cellWidth: 45 },
-        7: { cellWidth: 35 },
-        8: { cellWidth: 30, fontStyle: 'bold' },
-        9: { cellWidth: 10, halign: 'center' },
-      },
-      margin: { top: 25, right: margin, bottom: 25, left: margin },
-      didDrawPage: (data: any) => {
-        // Footer on each page
-        doc.setFillColor(245, 247, 250);
-        doc.rect(0, pageHeight - 15, pageWidth, 15, 'F');
-        doc.setFontSize(8);
-        doc.setTextColor(120, 120, 120);
-        doc.text('KeyRank SEO - أداة تحليل الكلمات المفتاحية للسوق السعودي', pageWidth / 2, pageHeight - 7, { align: 'center' });
-        doc.text(`صفحة ${data.pageNumber}`, margin, pageHeight - 7);
-      }
-    });
-
-    // Summary page
-    doc.addPage();
-    
-    // Summary header
-    doc.setFillColor(99, 102, 241);
-    doc.rect(0, 0, pageWidth, 35, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(20);
-    doc.text('ملخص التقرير', pageWidth - margin, 22, { align: 'right' });
-
-    yPosition = 50;
-
-    // Statistics cards
-    const lowComp = uniqueResults.filter(r => r.competition === 'low').length;
-    const medComp = uniqueResults.filter(r => r.competition === 'medium').length;
-    const highComp = uniqueResults.filter(r => r.competition === 'high').length;
-    const avgVolume = Math.round(uniqueResults.reduce((acc, r) => acc + r.searchVolume, 0) / uniqueResults.length);
-    const avgCpc = (uniqueResults.reduce((acc, r) => acc + r.cpc, 0) / uniqueResults.length).toFixed(2);
-    const upTrend = uniqueResults.filter(r => r.trend === 'up').length;
-
-    // Stats boxes
-    const boxWidth = 55;
-    const boxHeight = 35;
-    const boxGap = 10;
-    const startX = pageWidth - margin - boxWidth;
-
-    const stats = [
-      { label: 'إجمالي الكلمات', value: uniqueResults.length.toString(), color: [99, 102, 241] },
-      { label: 'متوسط حجم البحث', value: avgVolume.toLocaleString('ar-SA'), color: [34, 197, 94] },
-      { label: 'متوسط تكلفة النقرة', value: `${avgCpc} ر.س`, color: [245, 158, 11] },
-      { label: 'كلمات صاعدة', value: upTrend.toString(), color: [59, 130, 246] },
-    ];
-
-    stats.forEach((stat, index) => {
-      const xPos = startX - (index * (boxWidth + boxGap));
-      doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
-      doc.roundedRect(xPos, yPosition, boxWidth, boxHeight, 3, 3, 'F');
+      // Logo/Brand
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(16);
-      doc.text(stat.value, xPos + boxWidth / 2, yPosition + 15, { align: 'center' });
-      doc.setFontSize(9);
-      doc.text(stat.label, xPos + boxWidth / 2, yPosition + 26, { align: 'center' });
-    });
+      doc.setFontSize(32);
+      addText('KeyRank SEO', pageWidth / 2, 22, { align: 'center' });
+      
+      doc.setFontSize(14);
+      addText('Professional SEO Keywords Analysis Report', pageWidth / 2, 35, { align: 'center' });
 
-    yPosition += 55;
+      // Date bar
+      doc.setFontSize(11);
+      const dateStr = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+      });
+      addText(`Report Date: ${dateStr} | Total Keywords: ${uniqueResults.length}`, pageWidth / 2, 48, { align: 'center' });
 
-    // Competition breakdown
-    doc.setFontSize(14);
-    doc.setTextColor(60, 60, 60);
-    doc.text('توزيع مستوى المنافسة:', pageWidth - margin, yPosition, { align: 'right' });
-    yPosition += 10;
+      let yPosition = 70;
 
-    // Competition bars
-    const barWidth = 150;
-    const barHeight = 12;
-    const total = uniqueResults.length;
+      // Market Overview Section
+      if (analysis?.marketOverview) {
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(margin, yPosition - 5, pageWidth - (margin * 2), 35, 3, 3, 'F');
+        
+        doc.setFontSize(14);
+        doc.setTextColor(99, 102, 241);
+        addText('Market Overview', margin + 5, yPosition + 5);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const overviewLines = doc.splitTextToSize(analysis.marketOverview, pageWidth - (margin * 2) - 10);
+        addText(overviewLines, margin + 5, yPosition + 15);
+        yPosition += 45;
+      }
 
-    // Low competition bar
-    doc.setFillColor(200, 200, 200);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
-    doc.setFillColor(34, 197, 94);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (lowComp / total) * barWidth, barHeight, 2, 2, 'F');
-    doc.setFontSize(10);
-    doc.setTextColor(60, 60, 60);
-    doc.text(`منخفضة: ${lowComp} (${Math.round((lowComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
-    yPosition += 18;
+      // Two column layout for Opportunities & Recommendations
+      const colWidth = (pageWidth - (margin * 3)) / 2;
+      
+      // Opportunities
+      if (analysis?.opportunities && analysis.opportunities.length > 0) {
+        doc.setFillColor(240, 253, 244);
+        doc.roundedRect(margin, yPosition, colWidth, 50, 3, 3, 'F');
+        
+        doc.setFontSize(12);
+        doc.setTextColor(34, 197, 94);
+        addText('Opportunities', margin + 5, yPosition + 10);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(60, 60, 60);
+        analysis.opportunities.slice(0, 3).forEach((opp, i) => {
+          const truncated = opp.length > 60 ? opp.substring(0, 60) + '...' : opp;
+          addText(`${i + 1}. ${truncated}`, margin + 5, yPosition + 22 + (i * 10));
+        });
+      }
 
-    // Medium competition bar
-    doc.setFillColor(200, 200, 200);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
-    doc.setFillColor(245, 158, 11);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (medComp / total) * barWidth, barHeight, 2, 2, 'F');
-    doc.text(`متوسطة: ${medComp} (${Math.round((medComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
-    yPosition += 18;
+      // Recommendations
+      if (analysis?.recommendations && analysis.recommendations.length > 0) {
+        doc.setFillColor(239, 246, 255);
+        doc.roundedRect(margin + colWidth + margin, yPosition, colWidth, 50, 3, 3, 'F');
+        
+        doc.setFontSize(12);
+        doc.setTextColor(59, 130, 246);
+        addText('Recommendations', margin + colWidth + margin + 5, yPosition + 10);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(60, 60, 60);
+        analysis.recommendations.slice(0, 3).forEach((rec, i) => {
+          const truncated = rec.length > 60 ? rec.substring(0, 60) + '...' : rec;
+          addText(`${i + 1}. ${truncated}`, margin + colWidth + margin + 5, yPosition + 22 + (i * 10));
+        });
+      }
+      yPosition += 60;
 
-    // High competition bar
-    doc.setFillColor(200, 200, 200);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, barWidth, barHeight, 2, 2, 'F');
-    doc.setFillColor(239, 68, 68);
-    doc.roundedRect(pageWidth - margin - barWidth, yPosition, (highComp / total) * barWidth, barHeight, 2, 2, 'F');
-    doc.text(`مرتفعة: ${highComp} (${Math.round((highComp / total) * 100)}%)`, pageWidth - margin - barWidth - 5, yPosition + 9, { align: 'right' });
+      // Competitors Section
+      if (analysis?.competitors && analysis.competitors.length > 0) {
+        doc.setFillColor(254, 243, 199);
+        doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 45, 3, 3, 'F');
+        
+        doc.setFontSize(12);
+        doc.setTextColor(217, 119, 6);
+        addText('Competitors Analysis', margin + 5, yPosition + 10);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(60, 60, 60);
+        analysis.competitors.slice(0, 3).forEach((comp, i) => {
+          const xPos = margin + 5 + (i * ((pageWidth - margin * 2 - 10) / 3));
+          addText(`${comp.name}`, xPos, yPosition + 22);
+          if (comp.website) {
+            doc.setTextColor(99, 102, 241);
+            addText(comp.website.substring(0, 25), xPos, yPosition + 30);
+            doc.setTextColor(60, 60, 60);
+          }
+          if (comp.strengths) {
+            addText(`+ ${comp.strengths.substring(0, 30)}`, xPos, yPosition + 38);
+          }
+        });
+      }
 
-    // Footer
-    doc.setFillColor(99, 102, 241);
-    doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
-    doc.text('KeyRank SEO | أداة تحليل الكلمات المفتاحية الاحترافية للسوق السعودي', pageWidth / 2, pageHeight - 8, { align: 'center' });
+      // ===== PAGE 2: Keywords Table =====
+      doc.addPage();
 
-    // Save the PDF
-    const fileName = `keyrank-seo-report-${new Date().toISOString().split('T')[0]}.pdf`;
-    doc.save(fileName);
+      // Table header
+      doc.setFillColor(99, 102, 241);
+      doc.rect(0, 0, pageWidth, 18, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(14);
+      addText('Keywords Analysis Table', pageWidth / 2, 12, { align: 'center' });
+
+      // Helper functions for labels
+      const getCompetitionLabel = (competition: string) => {
+        const labels = { low: 'Low', medium: 'Medium', high: 'High' };
+        return labels[competition as keyof typeof labels] || 'Medium';
+      };
+
+      const getIntentLabel = (intent?: string) => {
+        const labels = { commercial: 'Commercial', informational: 'Info', transactional: 'Purchase' };
+        return labels[intent as keyof typeof labels] || 'Info';
+      };
+
+      const getTrendLabel = (trend: string) => {
+        const labels = { up: 'Rising', down: 'Falling', stable: 'Stable' };
+        return labels[trend as keyof typeof labels] || 'Stable';
+      };
+
+      // Prepare table data
+      const tableData = uniqueResults.map((r, index) => [
+        (index + 1).toString(),
+        r.keyword,
+        r.seoTitle.substring(0, 35) + (r.seoTitle.length > 35 ? '...' : ''),
+        r.searchVolume.toLocaleString(),
+        getCompetitionLabel(r.competition),
+        getIntentLabel(r.searchIntent),
+        `${r.cpc.toFixed(2)} SAR`,
+        getTrendLabel(r.trend),
+        (r.seoNotes || 'Optimize title & description').substring(0, 35) + '...'
+      ]);
+
+      // Create professional table
+      doc.autoTable({
+        startY: 22,
+        head: [[
+          '#',
+          'Keyword',
+          'SEO Title',
+          'Volume',
+          'Competition',
+          'Intent',
+          'CPC',
+          'Trend',
+          'SEO Notes'
+        ]],
+        body: tableData,
+        styles: {
+          fontSize: 8,
+          cellPadding: 2,
+          halign: 'center',
+          valign: 'middle',
+          lineColor: [200, 200, 200],
+          lineWidth: 0.1,
+        },
+        headStyles: {
+          fillColor: [99, 102, 241],
+          textColor: [255, 255, 255],
+          fontSize: 8,
+          fontStyle: 'bold',
+          halign: 'center',
+        },
+        alternateRowStyles: {
+          fillColor: [248, 250, 252],
+        },
+        columnStyles: {
+          0: { cellWidth: 8, halign: 'center' },
+          1: { cellWidth: 35, halign: 'left', fontStyle: 'bold' },
+          2: { cellWidth: 40, halign: 'left' },
+          3: { cellWidth: 20, halign: 'center' },
+          4: { cellWidth: 22, halign: 'center' },
+          5: { cellWidth: 20, halign: 'center' },
+          6: { cellWidth: 18, halign: 'center' },
+          7: { cellWidth: 18, halign: 'center' },
+          8: { cellWidth: 50, halign: 'left' },
+        },
+        margin: { top: 22, right: margin, bottom: 20, left: margin },
+        didDrawPage: (data: any) => {
+          // Footer
+          doc.setFillColor(248, 250, 252);
+          doc.rect(0, pageHeight - 12, pageWidth, 12, 'F');
+          doc.setFontSize(8);
+          doc.setTextColor(120, 120, 120);
+          addText('KeyRank SEO - Professional Keywords Analysis for Saudi Market', pageWidth / 2, pageHeight - 5, { align: 'center' });
+          addText(`Page ${data.pageNumber}`, pageWidth - margin, pageHeight - 5, { align: 'right' });
+        }
+      });
+
+      // ===== PAGE 3: Summary & Stats =====
+      doc.addPage();
+      
+      // Summary header
+      doc.setFillColor(99, 102, 241);
+      doc.rect(0, 0, pageWidth, 25, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      addText('Report Summary', pageWidth / 2, 16, { align: 'center' });
+
+      yPosition = 40;
+
+      // Statistics
+      const lowComp = uniqueResults.filter(r => r.competition === 'low').length;
+      const medComp = uniqueResults.filter(r => r.competition === 'medium').length;
+      const highComp = uniqueResults.filter(r => r.competition === 'high').length;
+      const avgVolume = Math.round(uniqueResults.reduce((acc, r) => acc + r.searchVolume, 0) / uniqueResults.length);
+      const avgCpc = (uniqueResults.reduce((acc, r) => acc + r.cpc, 0) / uniqueResults.length).toFixed(2);
+      const upTrend = uniqueResults.filter(r => r.trend === 'up').length;
+      const total = uniqueResults.length;
+
+      // Stats boxes
+      const boxWidth = 60;
+      const boxHeight = 40;
+      const boxGap = 15;
+      const totalBoxesWidth = (boxWidth * 4) + (boxGap * 3);
+      let boxStartX = (pageWidth - totalBoxesWidth) / 2;
+
+      const stats = [
+        { label: 'Total Keywords', value: total.toString(), color: [99, 102, 241] },
+        { label: 'Avg Volume', value: avgVolume.toLocaleString(), color: [34, 197, 94] },
+        { label: 'Avg CPC', value: `${avgCpc} SAR`, color: [245, 158, 11] },
+        { label: 'Rising Trends', value: upTrend.toString(), color: [59, 130, 246] },
+      ];
+
+      stats.forEach((stat, index) => {
+        const xPos = boxStartX + (index * (boxWidth + boxGap));
+        doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
+        doc.roundedRect(xPos, yPosition, boxWidth, boxHeight, 4, 4, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        addText(stat.value, xPos + boxWidth / 2, yPosition + 18, { align: 'center' });
+        doc.setFontSize(9);
+        addText(stat.label, xPos + boxWidth / 2, yPosition + 32, { align: 'center' });
+      });
+
+      yPosition += 60;
+
+      // Competition distribution
+      doc.setFontSize(14);
+      doc.setTextColor(60, 60, 60);
+      addText('Competition Distribution', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+
+      const barWidth = 180;
+      const barHeight = 18;
+      const barStartX = (pageWidth - barWidth) / 2;
+
+      // Progress bars for competition
+      const compData = [
+        { label: 'Low', count: lowComp, color: [34, 197, 94] },
+        { label: 'Medium', count: medComp, color: [245, 158, 11] },
+        { label: 'High', count: highComp, color: [239, 68, 68] },
+      ];
+
+      compData.forEach((item, i) => {
+        const y = yPosition + (i * 25);
+        
+        // Background bar
+        doc.setFillColor(230, 230, 230);
+        doc.roundedRect(barStartX, y, barWidth, barHeight, 3, 3, 'F');
+        
+        // Progress bar
+        const progressWidth = total > 0 ? (item.count / total) * barWidth : 0;
+        if (progressWidth > 0) {
+          doc.setFillColor(item.color[0], item.color[1], item.color[2]);
+          doc.roundedRect(barStartX, y, progressWidth, barHeight, 3, 3, 'F');
+        }
+        
+        // Label
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        addText(`${item.label}: ${item.count} (${Math.round((item.count / total) * 100)}%)`, barStartX - 5, y + 12, { align: 'right' });
+      });
+
+      // Footer branding
+      doc.setFillColor(99, 102, 241);
+      doc.rect(0, pageHeight - 18, pageWidth, 18, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      addText('KeyRank SEO | Professional SEO Keywords Analysis Tool for Saudi Market', pageWidth / 2, pageHeight - 7, { align: 'center' });
+
+      // Save the PDF
+      const fileName = `KeyRank-SEO-Report-${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    }
   };
 
   if (results.length === 0) return null;
@@ -491,6 +517,55 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
                 </ul>
               </div>
             )}
+          </motion.div>
+        )}
+
+        {/* Competitors Section */}
+        {analysis?.competitors && analysis.competitors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-12"
+          >
+            <div className="bg-card rounded-2xl p-6 border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="font-bold text-xl">المنافسون في السوق</h3>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {analysis.competitors.map((comp, i) => (
+                  <div key={i} className="bg-muted/30 rounded-xl p-4 border border-border/30">
+                    <h4 className="font-bold text-primary mb-2">{comp.name}</h4>
+                    {comp.website && (
+                      <a 
+                        href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-500 hover:underline block mb-2"
+                      >
+                        {comp.website}
+                      </a>
+                    )}
+                    {comp.strengths && (
+                      <p className="text-sm text-muted-foreground mb-1">
+                        <span className="text-green-500 font-medium">نقاط القوة: </span>
+                        {comp.strengths}
+                      </p>
+                    )}
+                    {comp.weaknesses && (
+                      <p className="text-sm text-muted-foreground">
+                        <span className="text-red-500 font-medium">نقاط الضعف: </span>
+                        {comp.weaknesses}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
 
