@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText, Users } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText, Users, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -14,6 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type ReportLanguage = "ar" | "ar-en";
 
 interface KeywordResult {
   keyword: string;
@@ -50,6 +59,7 @@ interface ResultsSectionProps {
 }
 
 const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) => {
+  const [reportLanguage, setReportLanguage] = useState<ReportLanguage>("ar");
   const getCompetitionBadge = (competition: string) => {
     const labels = {
       low: "منخفضة",
@@ -157,16 +167,27 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       addText("KeyRank SEO", pageWidth / 2, 22, { align: "center" });
 
       doc.setFontSize(14);
-      addText("تقرير تحليل الكلمات المفتاحية (SEO) - KeyRank", pageWidth / 2, 35, { align: "center" });
+      const reportTitle = reportLanguage === "ar-en" 
+        ? "SEO Keyword Analysis Report | تقرير تحليل الكلمات المفتاحية" 
+        : "تقرير تحليل الكلمات المفتاحية (SEO) - KeyRank";
+      addText(reportTitle, pageWidth / 2, 35, { align: "center" });
 
       // Date bar
       doc.setFontSize(11);
-      const dateStr = new Date().toLocaleDateString("ar-SA", {
+      const dateStrAr = new Date().toLocaleDateString("ar-SA", {
         year: "numeric",
         month: "long",
         day: "numeric",
       });
-      addText(`تاريخ التقرير: ${dateStr} | عدد الكلمات: ${uniqueResults.length}`, pageWidth / 2, 48, { align: "center" });
+      const dateStrEn = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const dateLabel = reportLanguage === "ar-en"
+        ? `Report Date: ${dateStrEn} | تاريخ التقرير: ${dateStrAr} | Keywords: ${uniqueResults.length}`
+        : `تاريخ التقرير: ${dateStrAr} | عدد الكلمات: ${uniqueResults.length}`;
+      addText(dateLabel, pageWidth / 2, 48, { align: "center" });
 
       let yPosition = 70;
 
@@ -177,7 +198,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
 
         doc.setFontSize(14);
         doc.setTextColor(99, 102, 241);
-        addText("نظرة عامة على السوق", margin + 5, yPosition + 5);
+        const marketTitle = reportLanguage === "ar-en" ? "Market Overview | نظرة عامة على السوق" : "نظرة عامة على السوق";
+        addText(marketTitle, margin + 5, yPosition + 5);
 
         doc.setFontSize(10);
         doc.setTextColor(60, 60, 60);
@@ -196,7 +218,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
 
         doc.setFontSize(12);
         doc.setTextColor(34, 197, 94);
-        addText("الفرص", margin + 5, yPosition + 10);
+        const oppTitle = reportLanguage === "ar-en" ? "Opportunities | الفرص" : "الفرص";
+        addText(oppTitle, margin + 5, yPosition + 10);
 
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
@@ -213,7 +236,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
 
         doc.setFontSize(12);
         doc.setTextColor(59, 130, 246);
-        addText("التوصيات", margin + colWidth + margin + 5, yPosition + 10);
+        const recTitle = reportLanguage === "ar-en" ? "Recommendations | التوصيات" : "التوصيات";
+        addText(recTitle, margin + colWidth + margin + 5, yPosition + 10);
 
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
@@ -231,7 +255,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
 
         doc.setFontSize(12);
         doc.setTextColor(217, 119, 6);
-        addText("تحليل المنافسين", margin + 5, yPosition + 10);
+        const compTitle = reportLanguage === "ar-en" ? "Competitor Analysis | تحليل المنافسين" : "تحليل المنافسين";
+        addText(compTitle, margin + 5, yPosition + 10);
 
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
@@ -257,20 +282,33 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       doc.rect(0, 0, pageWidth, 18, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(14);
-      addText("جدول الكلمات المفتاحية", pageWidth / 2, 12, { align: "center" });
+      const tableTitle = reportLanguage === "ar-en" ? "Keywords Table | جدول الكلمات المفتاحية" : "جدول الكلمات المفتاحية";
+      addText(tableTitle, pageWidth / 2, 12, { align: "center" });
 
-      // Helper functions for labels
+      // Helper functions for labels (bilingual support)
       const getCompetitionLabel = (competition: string) => {
+        if (reportLanguage === "ar-en") {
+          const labels = { low: "Low | منخفض", medium: "Medium | متوسط", high: "High | مرتفع" };
+          return labels[competition as keyof typeof labels] || "Medium | متوسط";
+        }
         const labels = { low: "منخفض", medium: "متوسط", high: "مرتفع" };
         return labels[competition as keyof typeof labels] || "متوسط";
       };
 
       const getIntentLabel = (intent?: string) => {
+        if (reportLanguage === "ar-en") {
+          const labels = { commercial: "Commercial | تجاري", informational: "Info | معلوماتي", transactional: "Purchase | شرائي" };
+          return labels[intent as keyof typeof labels] || "Info | معلوماتي";
+        }
         const labels = { commercial: "تجاري", informational: "معلوماتي", transactional: "شرائي" };
         return labels[intent as keyof typeof labels] || "معلوماتي";
       };
 
       const getTrendLabel = (trend: string) => {
+        if (reportLanguage === "ar-en") {
+          const labels = { up: "Up | صاعد", down: "Down | هابط", stable: "Stable | مستقر" };
+          return labels[trend as keyof typeof labels] || "Stable | مستقر";
+        }
         const labels = { up: "صاعد", down: "هابط", stable: "مستقر" };
         return labels[trend as keyof typeof labels] || "مستقر";
       };
@@ -288,20 +326,35 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
         r.seoNotes || "تحسين العنوان والوصف (SEO)"
       ]);
 
+      // Table headers based on language
+      const tableHeaders = reportLanguage === "ar-en" 
+        ? [
+            "#",
+            "Keyword | الكلمة",
+            "SEO Title | عنوان",
+            "Volume | البحث",
+            "Comp | المنافسة",
+            "Intent | النية",
+            "CPC",
+            "Trend | الاتجاه",
+            "SEO Notes | ملاحظات",
+          ]
+        : [
+            "#",
+            "الكلمة المفتاحية",
+            "عنوان SEO",
+            "حجم البحث",
+            "المنافسة",
+            "النية",
+            "CPC",
+            "الاتجاه",
+            "ملاحظات SEO",
+          ];
+
       // Create professional table
       autoTable(doc, {
         startY: 22,
-        head: [[
-          "#",
-          "الكلمة المفتاحية",
-          "عنوان SEO",
-          "حجم البحث",
-          "المنافسة",
-          "النية",
-          "CPC",
-          "الاتجاه",
-          "ملاحظات SEO",
-        ]],
+        head: [tableHeaders],
         body: tableData,
         styles: {
           font: "Tajawal",
@@ -349,8 +402,12 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           doc.rect(0, pageHeight - 12, pageWidth, 12, "F");
           doc.setFontSize(8);
           doc.setTextColor(120, 120, 120);
-          addText("KeyRank SEO | تقرير تحليل الكلمات المفتاحية للسوق السعودي", pageWidth / 2, pageHeight - 5, { align: "center" });
-          addText(`صفحة ${data.pageNumber}`, pageWidth - margin, pageHeight - 5, { align: "right" });
+          const footerText = reportLanguage === "ar-en" 
+            ? "KeyRank SEO | Saudi Market Keywords Analysis Report" 
+            : "KeyRank SEO | تقرير تحليل الكلمات المفتاحية للسوق السعودي";
+          addText(footerText, pageWidth / 2, pageHeight - 5, { align: "center" });
+          const pageLabel = reportLanguage === "ar-en" ? `Page ${data.pageNumber}` : `صفحة ${data.pageNumber}`;
+          addText(pageLabel, pageWidth - margin, pageHeight - 5, { align: "right" });
         }
       });
 
@@ -362,7 +419,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       doc.rect(0, 0, pageWidth, 25, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(18);
-      addText("ملخص التقرير", pageWidth / 2, 16, { align: "center" });
+      const summaryTitle = reportLanguage === "ar-en" ? "Report Summary | ملخص التقرير" : "ملخص التقرير";
+      addText(summaryTitle, pageWidth / 2, 16, { align: "center" });
 
       yPosition = 40;
 
@@ -382,12 +440,19 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       const totalBoxesWidth = boxWidth * 4 + boxGap * 3;
       let boxStartX = (pageWidth - totalBoxesWidth) / 2;
 
-      const stats = [
-        { label: "إجمالي الكلمات", value: total.toString(), color: [99, 102, 241] },
-        { label: "متوسط البحث", value: avgVolume.toLocaleString("ar-SA"), color: [34, 197, 94] },
-        { label: "متوسط CPC", value: `${avgCpc} ر.س`, color: [245, 158, 11] },
-        { label: "الكلمات الصاعدة", value: upTrend.toString(), color: [59, 130, 246] },
-      ];
+      const stats = reportLanguage === "ar-en" 
+        ? [
+            { label: "Total Keywords | إجمالي", value: total.toString(), color: [99, 102, 241] },
+            { label: "Avg Volume | متوسط البحث", value: avgVolume.toLocaleString("ar-SA"), color: [34, 197, 94] },
+            { label: "Avg CPC | متوسط CPC", value: `${avgCpc} SAR`, color: [245, 158, 11] },
+            { label: "Trending Up | صاعدة", value: upTrend.toString(), color: [59, 130, 246] },
+          ]
+        : [
+            { label: "إجمالي الكلمات", value: total.toString(), color: [99, 102, 241] },
+            { label: "متوسط البحث", value: avgVolume.toLocaleString("ar-SA"), color: [34, 197, 94] },
+            { label: "متوسط CPC", value: `${avgCpc} ر.س`, color: [245, 158, 11] },
+            { label: "الكلمات الصاعدة", value: upTrend.toString(), color: [59, 130, 246] },
+          ];
 
       stats.forEach((stat, index) => {
         const xPos = boxStartX + index * (boxWidth + boxGap);
@@ -405,7 +470,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       // Competition distribution
       doc.setFontSize(14);
       doc.setTextColor(60, 60, 60);
-      addText("توزيع المنافسة", pageWidth / 2, yPosition, { align: "center" });
+      const compDistTitle = reportLanguage === "ar-en" ? "Competition Distribution | توزيع المنافسة" : "توزيع المنافسة";
+      addText(compDistTitle, pageWidth / 2, yPosition, { align: "center" });
       yPosition += 15;
 
       const barWidth = 180;
@@ -413,11 +479,17 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       const barStartX = (pageWidth - barWidth) / 2;
 
       // Progress bars for competition
-      const compData = [
-        { label: "منخفض", count: lowComp, color: [34, 197, 94] },
-        { label: "متوسط", count: medComp, color: [245, 158, 11] },
-        { label: "مرتفع", count: highComp, color: [239, 68, 68] },
-      ];
+      const compData = reportLanguage === "ar-en"
+        ? [
+            { label: "Low | منخفض", count: lowComp, color: [34, 197, 94] },
+            { label: "Medium | متوسط", count: medComp, color: [245, 158, 11] },
+            { label: "High | مرتفع", count: highComp, color: [239, 68, 68] },
+          ]
+        : [
+            { label: "منخفض", count: lowComp, color: [34, 197, 94] },
+            { label: "متوسط", count: medComp, color: [245, 158, 11] },
+            { label: "مرتفع", count: highComp, color: [239, 68, 68] },
+          ];
 
       compData.forEach((item, i) => {
         const y = yPosition + (i * 25);
@@ -444,7 +516,10 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       doc.rect(0, pageHeight - 18, pageWidth, 18, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(10);
-      addText("KeyRank SEO | أداة احترافية لتحليل الكلمات المفتاحية", pageWidth / 2, pageHeight - 7, { align: "center" });
+      const brandingText = reportLanguage === "ar-en" 
+        ? "KeyRank SEO | Professional Keyword Analysis Tool" 
+        : "KeyRank SEO | أداة احترافية لتحليل الكلمات المفتاحية";
+      addText(brandingText, pageWidth / 2, pageHeight - 7, { align: "center" });
 
       // Save the PDF
       const fileName = `KeyRank-SEO-Report-${new Date().toISOString().split('T')[0]}.pdf`;
@@ -683,8 +758,21 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.4 }}
-          className="text-center mt-8"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
         >
+          <div className="flex items-center gap-3">
+            <Globe className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">لغة التقرير:</span>
+            <Select value={reportLanguage} onValueChange={(v) => setReportLanguage(v as ReportLanguage)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ar">عربي فقط</SelectItem>
+                <SelectItem value="ar-en">عربي + إنجليزي</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button 
             onClick={handleDownloadPDF}
             className="h-14 px-10 text-lg font-bold gradient-bg rounded-xl shadow-glow hover:shadow-soft transition-all duration-300"
