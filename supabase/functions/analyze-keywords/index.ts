@@ -1,9 +1,100 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// URL validation to prevent SSRF attacks
+function isValidUrl(urlString: string): { valid: boolean; error?: string } {
+  try {
+    const url = new URL(urlString);
+    
+    // Only allow HTTP and HTTPS protocols
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      return { valid: false, error: 'Only HTTP and HTTPS protocols are allowed' };
+    }
+    
+    const hostname = url.hostname.toLowerCase();
+    
+    // Block localhost and loopback addresses
+    if (hostname === 'localhost' || 
+        hostname === '127.0.0.1' || 
+        hostname.startsWith('127.') ||
+        hostname === '::1' ||
+        hostname === '[::1]') {
+      return { valid: false, error: 'Localhost addresses are not allowed' };
+    }
+    
+    // Block private IP ranges (RFC 1918)
+    const ipv4Match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (ipv4Match) {
+      const [, a, b, c] = ipv4Match.map(Number);
+      
+      // 10.0.0.0/8
+      if (a === 10) {
+        return { valid: false, error: 'Private IP addresses are not allowed' };
+      }
+      // 172.16.0.0/12
+      if (a === 172 && b >= 16 && b <= 31) {
+        return { valid: false, error: 'Private IP addresses are not allowed' };
+      }
+      // 192.168.0.0/16
+      if (a === 192 && b === 168) {
+        return { valid: false, error: 'Private IP addresses are not allowed' };
+      }
+      // 169.254.0.0/16 (Link-local / Cloud metadata)
+      if (a === 169 && b === 254) {
+        return { valid: false, error: 'Cloud metadata endpoints are not allowed' };
+      }
+      // 0.0.0.0
+      if (a === 0) {
+        return { valid: false, error: 'Invalid IP address' };
+      }
+    }
+    
+    // Block cloud metadata endpoints by hostname
+    const blockedHostnames = [
+      'metadata.google.internal',
+      'metadata.google.com',
+      'metadata',
+      'instance-data',
+    ];
+    if (blockedHostnames.includes(hostname)) {
+      return { valid: false, error: 'Cloud metadata endpoints are not allowed' };
+    }
+    
+    return { valid: true };
+  } catch {
+    return { valid: false, error: 'Invalid URL format' };
+  }
+}
+
+// Input validation
+function validateInput(data: { url?: string; description?: string; location?: string }): { valid: boolean; error?: string } {
+  // Validate URL length if provided
+  if (data.url && data.url.length > 2048) {
+    return { valid: false, error: 'URL is too long (max 2048 characters)' };
+  }
+  
+  // Validate description length if provided
+  if (data.description && data.description.length > 5000) {
+    return { valid: false, error: 'Description is too long (max 5000 characters)' };
+  }
+  
+  // Validate location length if provided
+  if (data.location && data.location.length > 200) {
+    return { valid: false, error: 'Location is too long (max 200 characters)' };
+  }
+  
+  // At least URL or description must be provided
+  if (!data.url && !data.description) {
+    return { valid: false, error: 'Please provide a URL or description' };
+  }
+  
+  return { valid: true };
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -12,9 +103,52 @@ serve(async (req) => {
   }
 
   try {
-    const { url, description, location } = await req.json();
+    // ===== AUTHENTICATION CHECK =====
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.error('Missing or invalid Authorization header');
+      return new Response(
+        JSON.stringify({ error: 'يجب تسجيل الدخول للوصول لهذه الخدمة' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     
-    console.log('Analyzing keywords for:', { url, description, location });
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.error('Authentication failed:', claimsError?.message);
+      return new Response(
+        JSON.stringify({ error: 'جلسة غير صالحة، يرجى تسجيل الدخول مرة أخرى' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log('Authenticated user:', userId);
+    // ===== END AUTHENTICATION CHECK =====
+
+    const requestData = await req.json();
+    const { url, description, location } = requestData;
+    
+    // ===== INPUT VALIDATION =====
+    const inputValidation = validateInput({ url, description, location });
+    if (!inputValidation.valid) {
+      return new Response(
+        JSON.stringify({ error: inputValidation.error }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    // ===== END INPUT VALIDATION =====
+    
+    console.log('Analyzing keywords for:', { url: url ? '[PROVIDED]' : '[NOT PROVIDED]', location });
 
     const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -26,14 +160,28 @@ serve(async (req) => {
     let websiteContent = '';
     let websiteMetadata = null;
     
-    // If URL is provided, scrape the website using Firecrawl
+    // If URL is provided, validate and scrape the website using Firecrawl
     if (url && FIRECRAWL_API_KEY) {
+      let formattedUrl = url.trim();
+      if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+        formattedUrl = `https://${formattedUrl}`;
+      }
+
+      // ===== URL SECURITY VALIDATION =====
+      const urlValidation = isValidUrl(formattedUrl);
+      if (!urlValidation.valid) {
+        console.error('URL validation failed:', urlValidation.error);
+        return new Response(
+          JSON.stringify({ error: `رابط غير مسموح: ${urlValidation.error}` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      // ===== END URL SECURITY VALIDATION =====
+
       console.log('Scraping website with Firecrawl...');
       try {
-        let formattedUrl = url.trim();
-        if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
-          formattedUrl = `https://${formattedUrl}`;
-        }
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
         const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
           method: 'POST',
@@ -46,7 +194,10 @@ serve(async (req) => {
             formats: ['markdown', 'html'],
             onlyMainContent: true,
           }),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         if (scrapeResponse.ok) {
           const scrapeData = await scrapeResponse.json();
@@ -56,8 +207,12 @@ serve(async (req) => {
         } else {
           console.log('Firecrawl scrape failed, continuing with AI analysis only');
         }
-      } catch (scrapeError) {
-        console.log('Error scraping website:', scrapeError);
+      } catch (scrapeError: unknown) {
+        if (scrapeError instanceof Error && scrapeError.name === 'AbortError') {
+          console.log('Scrape request timed out, continuing with AI analysis only');
+        } else {
+          console.log('Error scraping website:', scrapeError);
+        }
       }
     }
 
@@ -206,6 +361,7 @@ ${websiteContent ? `📄 محتوى الموقع المستخرج:\n${websiteCon
 - اذكر أسماء شركات/مؤسسات حقيقية ومعروفة
 - كل كلمة مفتاحية يجب أن تكون فريدة ومختلفة
 - قدم اقتراحات محتوى عملية وقابلة للتنفيذ`;
+
     console.log('Calling Lovable AI (gemini-2.5-pro) for advanced analysis...');
 
     // Use the more powerful model for better analysis
