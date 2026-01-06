@@ -12,7 +12,7 @@ interface KeywordResult {
   competition: "low" | "medium" | "high";
   cpc: number;
   trend: "up" | "down" | "stable";
-  searchIntent?: "commercial" | "informational" | "transactional";
+  searchIntent?: "commercial" | "informational" | "transactional" | "navigational";
   seoNotes?: string;
 }
 interface Competitor {

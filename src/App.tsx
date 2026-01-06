@@ -14,6 +14,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Auth from "./pages/Auth";
 import Subscribe from "./pages/Subscribe";
+import CountryLanding from "./pages/CountryLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/subscribe" element={<Subscribe />} />
+            <Route path="/country/:countryCode" element={<CountryLanding />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
