@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import {
   Table,
   TableBody,
@@ -12,13 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// Extend jsPDF type for autoTable
-declare module "jspdf" {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
 
 interface KeywordResult {
   keyword: string;
@@ -266,7 +259,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       ]);
 
       // Create professional table
-      doc.autoTable({
+      autoTable(doc, {
         startY: 22,
         head: [[
           '#',
