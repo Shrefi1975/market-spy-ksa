@@ -202,20 +202,43 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     };
 
     const competitorsSection = analysis?.competitors && analysis.competitors.length > 0
-      ? `<section class="card competitors-section">
-           <div class="card-header">
-             <div class="card-icon competitors-icon">🏆</div>
-             <h2>تحليل المنافسين</h2>
+      ? `<!-- Section: Competitors Analysis -->
+         <section class="section-block">
+           <div class="section-header">
+             <h2 class="section-title">تحليل المنافسين في السوق</h2>
+             <p class="section-desc">دراسة شاملة لأبرز المنافسين مع تحديد نقاط القوة والضعف</p>
            </div>
-           <div class="competitors-grid">
-             ${analysis.competitors.slice(0, 6).map((comp) => `
-               <div class="competitor-card">
-                 <h4>${escapeHtml(comp.name)}</h4>
-                 ${comp.website ? `<a href="${comp.website.startsWith('http') ? comp.website : 'https://' + comp.website}" class="comp-website">${escapeHtml(comp.website)}</a>` : ''}
-                 ${comp.strengths ? `<p class="strength"><span class="label">✓ نقاط القوة:</span> ${escapeHtml(comp.strengths)}</p>` : ''}
-                 ${comp.weaknesses ? `<p class="weakness"><span class="label">✗ نقاط الضعف:</span> ${escapeHtml(comp.weaknesses)}</p>` : ''}
-               </div>
-             `).join('\n')}
+           <div class="card competitors-section">
+             <div class="card-header">
+               <div class="card-icon competitors-icon">🏆</div>
+               <h3>المنافسون الرئيسيون</h3>
+             </div>
+             <div class="competitors-grid">
+               ${analysis.competitors.slice(0, 6).map((comp) => `
+                 <div class="competitor-card">
+                   <h4>${escapeHtml(comp.name)}</h4>
+                   ${comp.website ? `<a href="${comp.website.startsWith('http') ? comp.website : 'https://' + comp.website}" class="comp-website">${escapeHtml(comp.website)}</a>` : ''}
+                   ${comp.strengths ? `<p class="strength"><span class="label">✓ نقاط القوة:</span> ${escapeHtml(comp.strengths)}</p>` : ''}
+                   ${comp.weaknesses ? `<p class="weakness"><span class="label">✗ نقاط الضعف:</span> ${escapeHtml(comp.weaknesses)}</p>` : ''}
+                 </div>
+               `).join('\n')}
+             </div>
+           </div>
+         </section>`
+      : "";
+    
+    const analysisInsightsSection = (analysis?.marketOverview || analysis?.opportunities?.length || analysis?.recommendations?.length || analysis?.seasonalTips?.length)
+      ? `<!-- Section: Strategic Insights -->
+         <section class="section-block">
+           <div class="section-header">
+             <h2 class="section-title">رؤى استراتيجية للتسويق الرقمي</h2>
+             <p class="section-desc">توصيات مخصصة وفرص نمو مبنية على تحليل عميق للسوق</p>
+           </div>
+           <div class="cards-grid">
+             ${marketOverview}
+             ${listBlock("فرص النمو المتاحة", analysis?.opportunities, "🎯", "opportunities")}
+             ${listBlock("توصيات الخبراء", analysis?.recommendations, "💡", "recommendations")}
+             ${listBlock("استراتيجيات موسمية", analysis?.seasonalTips, "📅", "seasonal-tips")}
            </div>
          </section>`
       : "";
@@ -469,6 +492,34 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     .opportunities ul li::before { color: var(--success); }
     .recommendations ul li::before { color: var(--secondary); content: "◆"; }
     .seasonal-tips ul li::before { color: var(--warning); content: "★"; }
+
+    /* ===== Section Blocks ===== */
+    .section-block {
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
     /* ===== Competitors Section ===== */
     .competitors-section {
@@ -889,43 +940,46 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       </div>
     </header>
 
-    <!-- Analysis Cards -->
-    <div class="cards-grid">
-      ${marketOverview}
-      ${listBlock("الفرص", analysis?.opportunities, "🎯", "opportunities")}
-      ${listBlock("التوصيات", analysis?.recommendations, "💡", "recommendations")}
-      ${listBlock("نصائح موسمية", analysis?.seasonalTips, "📅", "seasonal-tips")}
-      ${competitorsSection}
-    </div>
-
-    <!-- Keywords Table -->
-    <section class="table-section">
-      <div class="table-header">
-        <div class="card-icon">📋</div>
-        <h2>جدول الكلمات المفتاحية</h2>
+    <!-- Section 1: Keywords Table -->
+    <section class="section-block">
+      <div class="section-header">
+        <h2 class="section-title">تحليل الكلمات المفتاحية للسوق السعودي</h2>
+        <p class="section-desc">اكتشف أفضل الكلمات المفتاحية لتحسين ظهورك في محركات البحث وزيادة الزيارات العضوية</p>
       </div>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>الكلمة المفتاحية</th>
-              <th>عنوان SEO</th>
-              <th>وصف Meta</th>
-              <th>حجم البحث</th>
-              <th>المنافسة</th>
-              <th>نية البحث</th>
-              <th>تكلفة النقرة</th>
-              <th>الاتجاه</th>
-              <th>ملاحظات SEO</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
+      <div class="table-section">
+        <div class="table-header">
+          <div class="card-icon">📋</div>
+          <h3>جدول الكلمات المفتاحية الرئيسية</h3>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الكلمة المفتاحية</th>
+                <th>عنوان SEO</th>
+                <th>وصف Meta</th>
+                <th>حجم البحث</th>
+                <th>المنافسة</th>
+                <th>نية البحث</th>
+                <th>تكلفة النقرة</th>
+                <th>الاتجاه</th>
+                <th>ملاحظات SEO</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
+
+    <!-- Section 2: Competitors -->
+    ${competitorsSection}
+
+    <!-- Section 3: Strategic Insights -->
+    ${analysisInsightsSection}
 
     <!-- Visual Analysis Section -->
     ${visualAnalysisSection}
@@ -961,158 +1015,29 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
   return (
     <section className="py-24 bg-muted/30" id="results">
       <div className="container mx-auto px-4">
+        {/* Section 1: Keywords Table - Main SEO Title */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            نتائج <span className="gradient-text">التحليل</span>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            تحليل <span className="gradient-text">الكلمات المفتاحية</span> للسوق السعودي
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            الكلمات المفتاحية المقترحة بناءً على تحليل السوق السعودي
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            اكتشف أفضل الكلمات المفتاحية لتحسين ظهورك في محركات البحث وزيادة الزيارات العضوية لموقعك
           </p>
         </motion.div>
 
-        {/* Analysis Insights */}
-        {analysis && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
-          >
-            {analysis.marketOverview && (
-              <div className="bg-card rounded-2xl p-6 border border-border/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <h3 className="font-bold text-lg">نظرة السوق</h3>
-                </div>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {analysis.marketOverview}
-                </p>
-              </div>
-            )}
-
-            {analysis.opportunities && analysis.opportunities.length > 0 && (
-              <div className="bg-card rounded-2xl p-6 border border-border/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-                    <Target className="w-6 h-6 text-green-500" />
-                  </div>
-                  <h3 className="font-bold text-lg">الفرص</h3>
-                </div>
-                <ul className="space-y-2">
-                  {analysis.opportunities.slice(0, 3).map((opp, i) => (
-                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                      <span className="text-green-500 mt-1">•</span>
-                      {opp}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {analysis.recommendations && analysis.recommendations.length > 0 && (
-              <div className="bg-card rounded-2xl p-6 border border-border/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                    <Lightbulb className="w-6 h-6 text-blue-500" />
-                  </div>
-                  <h3 className="font-bold text-lg">التوصيات</h3>
-                </div>
-                <ul className="space-y-2">
-                  {analysis.recommendations.slice(0, 3).map((rec, i) => (
-                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                      <span className="text-blue-500 mt-1">•</span>
-                      {rec}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {analysis.seasonalTips && analysis.seasonalTips.length > 0 && (
-              <div className="bg-card rounded-2xl p-6 border border-border/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-amber-500" />
-                  </div>
-                  <h3 className="font-bold text-lg">نصائح موسمية</h3>
-                </div>
-                <ul className="space-y-2">
-                  {analysis.seasonalTips.slice(0, 3).map((tip, i) => (
-                    <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                      <span className="text-amber-500 mt-1">•</span>
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {/* Competitors Section */}
-        {analysis?.competitors && analysis.competitors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mb-12"
-          >
-            <div className="bg-card rounded-2xl p-6 border border-border/50">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-orange-500" />
-                </div>
-                <h3 className="font-bold text-xl">المنافسون في السوق</h3>
-              </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {analysis.competitors.map((comp, i) => (
-                  <div key={i} className="bg-muted/30 rounded-xl p-4 border border-border/30">
-                    <h4 className="font-bold text-primary mb-2">{comp.name}</h4>
-                    {comp.website && (
-                      <a 
-                        href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-500 hover:underline block mb-2"
-                      >
-                        {comp.website}
-                      </a>
-                    )}
-                    {comp.strengths && (
-                      <p className="text-sm text-muted-foreground mb-1">
-                        <span className="text-green-500 font-medium">نقاط القوة: </span>
-                        {comp.strengths}
-                      </p>
-                    )}
-                    {comp.weaknesses && (
-                      <p className="text-sm text-muted-foreground">
-                        <span className="text-red-500 font-medium">نقاط الضعف: </span>
-                        {comp.weaknesses}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
+        {/* Keywords Table */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-card rounded-2xl shadow-card border border-border/50 overflow-hidden"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="bg-card rounded-2xl shadow-card border border-border/50 overflow-hidden mb-16"
         >
           <div className="overflow-x-auto professional-table">
             <Table className="border-collapse w-full min-w-[1200px]">
@@ -1177,6 +1102,156 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           </div>
         </motion.div>
 
+        {/* Section 2: Competitors Analysis */}
+        {analysis?.competitors && analysis.competitors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-16"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl md:text-4xl font-bold mb-4">
+                تحليل <span className="gradient-text">المنافسين</span> في السوق
+              </h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                دراسة شاملة لأبرز المنافسين في مجالك مع تحديد نقاط القوة والضعف لكل منافس
+              </p>
+            </div>
+            <div className="bg-card rounded-2xl p-6 border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-orange-500" />
+                </div>
+                <h4 className="font-bold text-xl">المنافسون الرئيسيون</h4>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {analysis.competitors.map((comp, i) => (
+                  <div key={i} className="bg-muted/30 rounded-xl p-4 border border-border/30">
+                    <h5 className="font-bold text-primary mb-2">{comp.name}</h5>
+                    {comp.website && (
+                      <a 
+                        href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-500 hover:underline block mb-2"
+                      >
+                        {comp.website}
+                      </a>
+                    )}
+                    {comp.strengths && (
+                      <p className="text-sm text-muted-foreground mb-1">
+                        <span className="text-green-500 font-medium">نقاط القوة: </span>
+                        {comp.strengths}
+                      </p>
+                    )}
+                    {comp.weaknesses && (
+                      <p className="text-sm text-muted-foreground">
+                        <span className="text-red-500 font-medium">نقاط الضعف: </span>
+                        {comp.weaknesses}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Section 3: Analysis Insights - Market Overview, Opportunities, Recommendations */}
+        {analysis && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-12"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl md:text-4xl font-bold mb-4">
+                رؤى <span className="gradient-text">استراتيجية</span> للتسويق الرقمي
+              </h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                توصيات مخصصة وفرص نمو مبنية على تحليل عميق للسوق والكلمات المفتاحية
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {analysis.marketOverview && (
+                <div className="bg-card rounded-2xl p-6 border border-border/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
+                      <BarChart3 className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    <h4 className="font-bold text-lg">نظرة عامة على السوق</h4>
+                  </div>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {analysis.marketOverview}
+                  </p>
+                </div>
+              )}
+
+              {analysis.opportunities && analysis.opportunities.length > 0 && (
+                <div className="bg-card rounded-2xl p-6 border border-border/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                      <Target className="w-6 h-6 text-green-500" />
+                    </div>
+                    <h4 className="font-bold text-lg">فرص النمو المتاحة</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {analysis.opportunities.slice(0, 3).map((opp, i) => (
+                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                        <span className="text-green-500 mt-1">•</span>
+                        {opp}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {analysis.recommendations && analysis.recommendations.length > 0 && (
+                <div className="bg-card rounded-2xl p-6 border border-border/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                      <Lightbulb className="w-6 h-6 text-blue-500" />
+                    </div>
+                    <h4 className="font-bold text-lg">توصيات الخبراء</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {analysis.recommendations.slice(0, 3).map((rec, i) => (
+                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                        <span className="text-blue-500 mt-1">•</span>
+                        {rec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {analysis.seasonalTips && analysis.seasonalTips.length > 0 && (
+                <div className="bg-card rounded-2xl p-6 border border-border/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                      <Calendar className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <h4 className="font-bold text-lg">استراتيجيات موسمية</h4>
+                  </div>
+                  <ul className="space-y-2">
+                    {analysis.seasonalTips.slice(0, 3).map((tip, i) => (
+                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
+                        <span className="text-amber-500 mt-1">•</span>
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Download Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
