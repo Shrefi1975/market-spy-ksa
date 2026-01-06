@@ -21,6 +21,9 @@ const HeroSection: React.FC = () => {
     { Icon: Sparkles, delay: 2.5 },
   ];
 
+  // Duplicate countries array multiple times for seamless loop
+  const marqueeCountries = [...arabCountries, ...arabCountries, ...arabCountries, ...arabCountries];
+
   return (
     <section className="relative min-h-[80vh] overflow-hidden pt-20">
       {/* Background */}
@@ -90,29 +93,6 @@ const HeroSection: React.FC = () => {
                   <div className="text-[10px] text-white/70">{stat.label}</div>
                 </motion.div>
               ))}
-            </motion.div>
-
-            {/* Countries Marquee */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="mt-6 overflow-hidden"
-            >
-              <p className="text-white/60 text-xs mb-2 text-center">الأسواق المدعومة:</p>
-              <div className="relative">
-                <div className="flex animate-marquee whitespace-nowrap">
-                  {[...arabCountries, ...arabCountries].map((country, index) => (
-                    <span
-                      key={`${country.code}-${index}`}
-                      className="inline-flex items-center gap-1 mx-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
-                    >
-                      <span>{country.flag}</span>
-                      <span>{country.nameAr}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
             </motion.div>
           </motion.div>
 
@@ -205,6 +185,37 @@ const HeroSection: React.FC = () => {
               />
             ))}
           </motion.div>
+        </div>
+      </div>
+
+      {/* Countries Marquee - Full Width, Overlays Everything */}
+      <div className="absolute bottom-8 left-0 right-0 z-20 overflow-hidden">
+        <p className="text-white/60 text-xs mb-3 text-center">الأسواق المدعومة:</p>
+        <div className="relative w-full overflow-hidden">
+          <div className="marquee-container">
+            <div className="marquee-content">
+              {marqueeCountries.map((country, index) => (
+                <span
+                  key={`${country.code}-${index}`}
+                  className="inline-flex items-center gap-1.5 mx-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm hover:bg-white/20 transition-colors cursor-default"
+                >
+                  <span className="text-base">{country.flag}</span>
+                  <span>{country.nameAr}</span>
+                </span>
+              ))}
+            </div>
+            <div className="marquee-content" aria-hidden="true">
+              {marqueeCountries.map((country, index) => (
+                <span
+                  key={`${country.code}-dup-${index}`}
+                  className="inline-flex items-center gap-1.5 mx-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm hover:bg-white/20 transition-colors cursor-default"
+                >
+                  <span className="text-base">{country.flag}</span>
+                  <span>{country.nameAr}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
