@@ -34,11 +34,13 @@ interface ResultsSectionProps {
   results: KeywordResult[];
   analysis?: AnalysisData;
   isAnalysisComplete?: boolean;
+  countryName?: string;
 }
 const ResultsSection: React.FC<ResultsSectionProps> = ({
   results,
   analysis,
-  isAnalysisComplete = false
+  isAnalysisComplete = false,
+  countryName = "العربي"
 }) => {
   const [showDownloadHint, setShowDownloadHint] = useState(false);
 
@@ -281,11 +283,11 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
   <style>
     /* ===== CSS Variables & Theme ===== */
     :root {
-      --primary: #6366f1;
-      --primary-light: #818cf8;
-      --primary-dark: #4f46e5;
-      --secondary: #0ea5e9;
-      --secondary-light: #38bdf8;
+      --primary: #e11d48;
+      --primary-light: #f43f5e;
+      --primary-dark: #be123c;
+      --secondary: #1e3a5f;
+      --secondary-light: #2d4a73;
       --success: #10b981;
       --success-light: #34d399;
       --warning: #f59e0b;
@@ -925,7 +927,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
     <!-- Section 1: Keywords Table -->
     <section class="section-block">
       <div class="section-header">
-        <h2 class="section-title">تحليل الكلمات المفتاحية للسوق السعودي</h2>
+        <h2 class="section-title">تحليل الكلمات المفتاحية للسوق ${escapeHtml(countryName)}</h2>
         <p class="section-desc">اكتشف أفضل الكلمات المفتاحية لتحسين ظهورك في محركات البحث وزيادة الزيارات العضوية</p>
       </div>
       <div class="table-section">
@@ -976,7 +978,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
         </svg>
         <span>KeyRank</span>
       </div>
-      <p>أداة احترافية لتحليل الكلمات المفتاحية للسوق السعودي والعربي</p>
+      <p>أداة احترافية لتحليل الكلمات المفتاحية للسوق ${escapeHtml(countryName)} والعربي</p>
     </footer>
   </div>
 </body>
