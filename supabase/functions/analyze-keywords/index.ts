@@ -649,17 +649,61 @@ ${websiteContent ? `📄 محتوى الموقع المستخرج:\n${websiteCon
     // Parse JSON from AI response
     let result;
     try {
-      // Try to extract JSON from the response
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      // Try to extract JSON from the response - handle markdown code blocks
+      let jsonContent = content;
+      
+      // Remove markdown code block markers if present
+      if (content.includes('```json')) {
+        jsonContent = content.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+      } else if (content.includes('```')) {
+        jsonContent = content.replace(/```\s*/g, '');
+      }
+      
+      // Try to find and parse JSON object
+      const jsonMatch = jsonContent.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
+        let jsonStr = jsonMatch[0];
+        
+        // Clean up common JSON issues
+        // Fix single quotes to double quotes for property names
+        jsonStr = jsonStr.replace(/([{,]\s*)'([^']+)'(\s*:)/g, '$1"$2"$3');
+        // Fix trailing commas before closing braces/brackets
+        jsonStr = jsonStr.replace(/,(\s*[}\]])/g, '$1');
+        // Fix unescaped newlines in strings
+        jsonStr = jsonStr.replace(/:\s*"([^"]*)\n([^"]*)"/g, (_match: string, p1: string, p2: string) => {
+          return `: "${p1}\\n${p2}"`;
+        });
+        
+        result = JSON.parse(jsonStr);
       } else {
         throw new Error('No JSON found in response');
       }
     } catch (parseError) {
       console.error('Error parsing AI response:', parseError);
-      console.log('Raw AI response:', content);
-      throw new Error('فشل في تحليل نتائج الذكاء الاصطناعي');
+      console.log('Raw AI response (first 2000 chars):', content.substring(0, 2000));
+      
+      // Try a more aggressive cleanup as fallback
+      try {
+        let cleanedContent = content;
+        // Remove everything before first { and after last }
+        const firstBrace = cleanedContent.indexOf('{');
+        const lastBrace = cleanedContent.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+          cleanedContent = cleanedContent.substring(firstBrace, lastBrace + 1);
+          // More aggressive fixes
+          cleanedContent = cleanedContent
+            .replace(/,\s*,/g, ',')
+            .replace(/,(\s*[}\]])/g, '$1')
+            .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
+          result = JSON.parse(cleanedContent);
+          console.log('Successfully parsed with fallback method');
+        } else {
+          throw new Error('Could not find valid JSON structure');
+        }
+      } catch (fallbackError) {
+        console.error('Fallback parsing also failed:', fallbackError);
+        throw new Error('فشل في تحليل نتائج الذكاء الاصطناعي');
+      }
     }
 
     console.log('Analysis completed successfully with', result.keywords?.length || 0, 'keywords');

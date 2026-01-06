@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Search, TrendingUp, BarChart3, Target, LineChart, Sparkles, Shield, Zap, Award } from "lucide-react";
+import { arabCountries } from "@/data/arabCountries";
 
 const stats = [
   { icon: Shield, value: "100%", label: "دقة التحليل", color: "text-emerald-500" },
@@ -69,12 +70,12 @@ const HeroSection: React.FC = () => {
               مبنية على بيانات حقيقية من 18 دولة عربية، مواسم محلية، وتحليل المنافسين.
             </p>
 
-            {/* Stats Grid inside Hero */}
+            {/* Stats Grid inside Hero - Smaller */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              className="grid grid-cols-4 gap-2"
             >
               {stats.map((stat, index) => (
                 <motion.div
@@ -82,13 +83,36 @@ const HeroSection: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                  className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 text-center hover:bg-white/15 transition-all"
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-2 border border-white/20 text-center hover:bg-white/15 transition-all"
                 >
-                  <stat.icon className={`w-7 h-7 mx-auto mb-2 ${stat.color}`} />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-white/70">{stat.label}</div>
+                  <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
+                  <div className="text-lg font-bold text-white">{stat.value}</div>
+                  <div className="text-[10px] text-white/70">{stat.label}</div>
                 </motion.div>
               ))}
+            </motion.div>
+
+            {/* Countries Marquee */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-6 overflow-hidden"
+            >
+              <p className="text-white/60 text-xs mb-2 text-center">الأسواق المدعومة:</p>
+              <div className="relative">
+                <div className="flex animate-marquee whitespace-nowrap">
+                  {[...arabCountries, ...arabCountries].map((country, index) => (
+                    <span
+                      key={`${country.code}-${index}`}
+                      className="inline-flex items-center gap-1 mx-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
+                    >
+                      <span>{country.flag}</span>
+                      <span>{country.nameAr}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           </motion.div>
 

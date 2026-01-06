@@ -48,16 +48,6 @@ const Footer = () => {
                   المدونة
                 </Link>
               </li>
-              <li>
-                <Link to="/pricing" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  الأسعار
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  تواصل معنا
-                </Link>
-              </li>
             </ul>
           </div>
 
