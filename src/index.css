@@ -427,16 +427,30 @@
     }
   }
 
-  @keyframes marquee-rtl {
-    0% {
+  /* Seamless Marquee */
+  .marquee-container {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .marquee-content {
+    display: flex;
+    flex-shrink: 0;
+    animation: scroll-rtl 20s linear infinite;
+  }
+
+  @keyframes scroll-rtl {
+    from {
       transform: translateX(-100%);
     }
-    100% {
-      transform: translateX(0%);
+    to {
+      transform: translateX(0);
     }
   }
 
-  .animate-marquee-rtl {
-    animation: marquee-rtl 25s linear infinite;
+  .mask-gradient {
+    mask-image: linear-gradient(to left, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 5%, black 95%, transparent 100%);
   }
 }

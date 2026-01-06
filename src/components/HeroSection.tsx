@@ -97,26 +97,26 @@ const HeroSection: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="mt-6 overflow-hidden"
+              className="mt-6 overflow-hidden mask-gradient"
             >
               <p className="text-white/60 text-xs mb-2 text-center">الأسواق المدعومة:</p>
-              <div className="relative flex overflow-hidden">
-                <div className="flex animate-marquee-rtl whitespace-nowrap">
-                  {[...arabCountries, ...arabCountries, ...arabCountries].map((country, index) => (
+              <div className="marquee-container">
+                <div className="marquee-content">
+                  {arabCountries.map((country) => (
                     <span
-                      key={`${country.code}-${index}`}
-                      className="inline-flex items-center gap-1 mx-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm flex-shrink-0"
+                      key={country.code}
+                      className="inline-flex items-center gap-1.5 mx-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
                     >
                       <span>{country.flag}</span>
                       <span>{country.nameAr}</span>
                     </span>
                   ))}
                 </div>
-                <div className="flex animate-marquee-rtl whitespace-nowrap" aria-hidden="true">
-                  {[...arabCountries, ...arabCountries, ...arabCountries].map((country, index) => (
+                <div className="marquee-content" aria-hidden="true">
+                  {arabCountries.map((country) => (
                     <span
-                      key={`dup-${country.code}-${index}`}
-                      className="inline-flex items-center gap-1 mx-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm flex-shrink-0"
+                      key={`dup-${country.code}`}
+                      className="inline-flex items-center gap-1.5 mx-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
                     >
                       <span>{country.flag}</span>
                       <span>{country.nameAr}</span>
