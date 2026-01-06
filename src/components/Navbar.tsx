@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,12 +46,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="hidden md:block text-foreground/80 hover:text-foreground transition-colors font-medium">
-              تسجيل الدخول
-            </button>
-            <button className="gradient-bg px-6 py-2.5 rounded-xl text-primary-foreground font-medium shadow-soft hover:shadow-glow transition-all duration-300">
-              ابدأ مجاناً
-            </button>
+            <UserMenu />
             
             {/* Mobile Menu Button */}
             <button 

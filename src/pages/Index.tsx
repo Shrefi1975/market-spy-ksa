@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -9,6 +10,7 @@ import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 interface KeywordResult {
@@ -33,8 +35,21 @@ const Index = () => {
   const [analysis, setAnalysis] = useState<AnalysisData | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user, session, subscription, refreshSubscription } = useAuth();
+  const navigate = useNavigate();
 
   const handleAnalyze = async (data: { url: string; description: string; location: string }) => {
+    // Check if user is logged in
+    if (!user || !session) {
+      toast({
+        title: "يجب تسجيل الدخول",
+        description: "يرجى تسجيل الدخول أولاً لاستخدام أداة التحليل",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     setResults([]);
     setAnalysis(undefined);
@@ -62,6 +77,16 @@ const Index = () => {
       }
 
       if (!responseData?.success) {
+        // Check if upgrade is required
+        if (responseData?.upgrade_required) {
+          toast({
+            title: "يجب الترقية",
+            description: responseData?.error || 'يرجى الترقية لخطة مدفوعة',
+            variant: "destructive",
+          });
+          navigate('/subscribe');
+          return;
+        }
         throw new Error(responseData?.error || 'فشل التحليل');
       }
 
@@ -82,9 +107,13 @@ const Index = () => {
       setResults(mappedResults);
       setAnalysis(analysisData);
       
+      // Refresh subscription to update usage
+      await refreshSubscription();
+      
+      const usageInfo = responseData.usage;
       toast({
         title: "تم التحليل بنجاح! ✨",
-        description: `تم العثور على ${mappedResults.length} كلمات مفتاحية مربحة لمتجرك`,
+        description: `تم العثور على ${mappedResults.length} كلمات مفتاحية. (${usageInfo?.searches_used || 1}/${usageInfo?.searches_limit || 5} عمليات بحث)`,
       });
 
       // Scroll to results
