@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, Users, ArrowDown, Sparkles } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, Users, ArrowDown, Sparkles, Mail, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -1076,6 +1076,37 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
           <p className="text-sm text-muted-foreground">
             التقرير بصيغة HTML يمكنك فتحه في أي متصفح
           </p>
+
+          {/* Share Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+            <span className="text-sm text-muted-foreground">مشاركة التقرير:</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const text = `تحليل الكلمات المفتاحية للسوق ${countryName} - ${uniqueResults.length} كلمة مفتاحية تم تحليلها بنجاح 🚀\n\nجرب أداة KeyRank مجاناً: ${window.location.origin}`;
+                const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+              }}
+              className="bg-green-500/10 hover:bg-green-500/20 text-green-600 border-green-500/30"
+            >
+              <MessageCircle className="w-4 h-4 ml-2" />
+              واتساب
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const subject = `تحليل الكلمات المفتاحية للسوق ${countryName} - KeyRank`;
+                const body = `مرحباً،\n\nأود مشاركة نتائج تحليل الكلمات المفتاحية للسوق ${countryName}.\n\nتم تحليل ${uniqueResults.length} كلمة مفتاحية بنجاح.\n\nجرب أداة KeyRank مجاناً:\n${window.location.origin}\n\nأبرز النتائج:\n- كلمات بمنافسة منخفضة: ${uniqueResults.filter(r => r.competition === "low").length}\n- كلمات باتجاه صاعد: ${uniqueResults.filter(r => r.trend === "up").length}\n- فرص ذهبية: ${uniqueResults.filter(r => r.competition === "low" && r.trend === "up").length}`;
+                window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+              }}
+              className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 border-blue-500/30"
+            >
+              <Mail className="w-4 h-4 ml-2" />
+              البريد الإلكتروني
+            </Button>
+          </div>
         </motion.div>
 
         {/* Quick Stats */}
