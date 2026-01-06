@@ -82,11 +82,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onAnalyze, isLoading }) => {
             transition={{ duration: 0.8 }}
             className="text-right order-2 lg:order-1"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              اكتشف الكلمات المفتاحية{" "}
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">
+              الكلمات المفتاحية{" "}
               <span className="gradient-text">الذهبية</span>
               <br />
-              لنجاح متجرك في السعودية
+              لنجاح موقعك في السعودية
             </h1>
             
             <p className="text-lg md:text-xl text-white/80 mb-8 leading-relaxed">
