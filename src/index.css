@@ -427,16 +427,28 @@
     }
   }
 
-  @keyframes marquee {
+  /* Seamless Marquee Animation - RTL (Left to Right) */
+  @keyframes marquee-rtl {
     0% {
-      transform: translateX(0);
+      transform: translateX(-100%);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(0%);
     }
   }
 
-  .animate-marquee {
-    animation: marquee 30s linear infinite;
+  .marquee-container {
+    display: flex;
+    width: max-content;
+  }
+
+  .marquee-content {
+    display: flex;
+    flex-shrink: 0;
+    animation: marquee-rtl 40s linear infinite;
+  }
+
+  .marquee-container:hover .marquee-content {
+    animation-play-state: paused;
   }
 }
