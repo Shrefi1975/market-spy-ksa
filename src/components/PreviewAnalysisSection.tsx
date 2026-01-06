@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Search, BarChart3, Target, Zap, Shield, Award } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Search, Target, FileText, Download } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -67,13 +67,46 @@ const previewKeywords: KeywordResult[] = [
     searchIntent: "معلوماتي",
     seoNotes: "محتوى قوي مطلوب للتنافس",
   },
-];
-
-const trustIndicators = [
-  { icon: Shield, value: "100%", label: "دقة التحليل", color: "text-emerald-500" },
-  { icon: BarChart3, value: "+5K", label: "تحليل مُنجز", color: "text-primary" },
-  { icon: Award, value: "4.9", label: "تقييم العملاء", color: "text-amber-500" },
-  { icon: Zap, value: "3 ثوانٍ", label: "سرعة التحليل", color: "text-blue-500" },
+  {
+    keyword: "سوشي رول بالسلمون",
+    seoTitle: "أشهى سوشي رول سلمون طازج | وصفات يابانية أصلية",
+    metaDescription: "تذوق أفضل سوشي رول سلمون مُحضر من أجود أنواع السمك الطازج. توصيل سريع لجميع الأحياء.",
+    searchVolume: 6800,
+    competition: "low",
+    trend: "up",
+    searchIntent: "شرائي",
+    seoNotes: "فرصة ذهبية!",
+  },
+  {
+    keyword: "رامن ياباني أصلي",
+    seoTitle: "رامن ياباني أصلي | شوربة لذيذة بنكهات متنوعة",
+    metaDescription: "استمتع بأفضل رامن ياباني أصلي محضر على الطريقة التقليدية. نكهات ميسو، شويو، وتونكوتسو.",
+    searchVolume: 4500,
+    competition: "low",
+    trend: "up",
+    searchIntent: "تجاري",
+    seoNotes: "منافسة منخفضة جداً",
+  },
+  {
+    keyword: "حجز مطعم ياباني جدة",
+    seoTitle: "احجز طاولتك في أفخم المطاعم اليابانية بجدة",
+    metaDescription: "احجز الآن في أرقى المطاعم اليابانية بجدة. أجواء راقية وتجربة طعام استثنائية.",
+    searchVolume: 3200,
+    competition: "medium",
+    trend: "stable",
+    searchIntent: "تجاري",
+    seoNotes: "فرصة جيدة للحجوزات",
+  },
+  {
+    keyword: "قائمة أسعار السوشي",
+    seoTitle: "قائمة أسعار السوشي المحدثة 2024 | عروض وخصومات",
+    metaDescription: "تعرف على أسعار السوشي في أفضل المطاعم السعودية. مقارنة شاملة مع عروض حصرية.",
+    searchVolume: 7100,
+    competition: "medium",
+    trend: "up",
+    searchIntent: "معلوماتي",
+    seoNotes: "محتوى مقارنة مطلوب",
+  },
 ];
 
 const getCompetitionBadge = (competition: string) => {
@@ -127,30 +160,6 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Trust Indicators */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12"
-        >
-          {trustIndicators.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center hover:border-primary/30 transition-all hover:shadow-lg"
-            >
-              <item.icon className={`w-8 h-8 mx-auto mb-2 ${item.color}`} />
-              <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
-              <div className="text-xs text-muted-foreground">{item.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -169,6 +178,20 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {subtitle}
           </p>
+          
+          {/* Report preview info */}
+          {isAnalyzed && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-600 dark:text-emerald-400 text-sm"
+            >
+              <FileText className="w-4 h-4" />
+              <span>لمحة من التقرير الكامل ({displayData.length} كلمة مفتاحية)</span>
+              <Download className="w-4 h-4" />
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Analysis Table */}

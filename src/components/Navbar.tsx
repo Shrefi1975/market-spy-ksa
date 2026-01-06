@@ -30,7 +30,6 @@ const Navbar = () => {
 
   const socialLinks = [
     { icon: "facebook", url: "https://facebook.com" },
-    { icon: "x", url: "https://twitter.com" },
     { icon: "telegram", url: "https://t.me" },
     { icon: "instagram", url: "https://instagram.com" },
     { icon: "youtube", url: "https://youtube.com" },
@@ -137,11 +136,6 @@ const Navbar = () => {
               ) : (
                 <Moon className="w-5 h-5 text-foreground" />
               )}
-            </button>
-
-            {/* Search */}
-            <button className="w-10 h-10 rounded-full flex items-center justify-center gradient-bg text-primary-foreground">
-              <Search className="w-5 h-5" />
             </button>
 
             {/* WhatsApp Contact Button */}

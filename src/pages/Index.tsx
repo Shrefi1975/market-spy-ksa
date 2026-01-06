@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import AnalysisFormSection from "@/components/AnalysisFormSection";
 import PreviewAnalysisSection from "@/components/PreviewAnalysisSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
@@ -9,6 +10,7 @@ import ResultsSection from "@/components/ResultsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import PricingSection from "@/components/PricingSection";
 import ContactFormSection from "@/components/ContactFormSection";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpgradeDialog from "@/components/UpgradeDialog";
@@ -162,7 +164,8 @@ const Index = () => {
       <Navbar />
       <WhatsAppButton />
       <UpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
-      <HeroSection onAnalyze={handleAnalyze} isLoading={isLoading} />
+      <HeroSection />
+      <AnalysisFormSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <FeaturesSection />
       <HowItWorksSection />
@@ -170,6 +173,7 @@ const Index = () => {
       <TestimonialsSection />
       <PricingSection />
       <ContactFormSection />
+      <FAQSection />
       <Footer />
     </div>
   );
