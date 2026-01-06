@@ -82,15 +82,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onAnalyze, isLoading }) => {
             transition={{ duration: 0.8 }}
             className="text-right order-2 lg:order-1"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-bold text-white mb-8 leading-[1.2]">
               اكتشف الكلمات المفتاحية{" "}
               <span className="gradient-text">الذهبية</span>
               <br />
-              لنجاح متجرك في السعودية
+              <span className="text-3xl md:text-4xl lg:text-6xl xl:text-7xl">لنجاح متجرك في السعودية</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-white/80 mb-8 leading-relaxed">
-              أداة تحلّل السوق السعودي وتقترح كلمات مفتاحية ذكية لتحقيق الربحية المتميزة 
+            <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-white/70 mb-10 leading-relaxed max-w-2xl">
+              أداة تحلّل السوق السعودي وتقترح كلمات مفتاحية ذكية لتحقيق الربحية المتميزة
+              <br className="hidden lg:block" />
               مبنية على بيانات حقيقية، مواسم محلية، وتحليل المنافسين.
             </p>
 
