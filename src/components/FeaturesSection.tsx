@@ -12,23 +12,23 @@ import {
 const features = [
   {
     icon: BarChart3,
-    title: "تحليل السوق السعودي",
-    description: "بيانات حصرية عن البحث المحلي في المملكة العربية السعودية",
+    title: "تحليل الأسواق العربية",
+    description: "بيانات حصرية عن البحث المحلي في 18 دولة عربية من الخليج إلى المغرب",
   },
   {
     icon: Target,
     title: "استهداف دقيق",
-    description: "اكتشاف الفرص غير المستخدمة في مدينتك المحددة",
+    description: "اكتشاف الفرص غير المستخدمة في كل سوق عربي",
   },
   {
     icon: Zap,
     title: "تحديثات لحظية",
-    description: "تتبع الاتجاهات الموسمية (رمضان، اليوم الوطني، العيد)",
+    description: "تتبع الاتجاهات الموسمية (رمضان، الأعياد، المناسبات المحلية)",
   },
   {
     icon: Shield,
     title: "تحليل المنافسة",
-    description: "مقارنة مباشرة مع أقوى المنافسين في السوق",
+    description: "مقارنة مباشرة مع أقوى المنافسين في كل سوق",
   },
   {
     icon: DollarSign,
@@ -54,10 +54,10 @@ const FeaturesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            مميزات <span className="gradient-text">فريدة</span> للسوق السعودي
+            مميزات <span className="gradient-text">فريدة</span> للأسواق العربية
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            أدوات متقدمة صُممت خصيصاً لفهم سلوك المستهلك السعودي وتحقيق أقصى استفادة
+            أدوات متقدمة صُممت خصيصاً لفهم سلوك المستهلك العربي وتحقيق أقصى استفادة
           </p>
         </motion.div>
 
