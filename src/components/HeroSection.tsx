@@ -100,12 +100,23 @@ const HeroSection: React.FC = () => {
               className="mt-6 overflow-hidden"
             >
               <p className="text-white/60 text-xs mb-2 text-center">الأسواق المدعومة:</p>
-              <div className="relative">
-                <div className="flex animate-marquee whitespace-nowrap">
-                  {[...arabCountries, ...arabCountries].map((country, index) => (
+              <div className="relative flex overflow-hidden">
+                <div className="flex animate-marquee-rtl whitespace-nowrap">
+                  {[...arabCountries, ...arabCountries, ...arabCountries].map((country, index) => (
                     <span
                       key={`${country.code}-${index}`}
-                      className="inline-flex items-center gap-1 mx-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
+                      className="inline-flex items-center gap-1 mx-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm flex-shrink-0"
+                    >
+                      <span>{country.flag}</span>
+                      <span>{country.nameAr}</span>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex animate-marquee-rtl whitespace-nowrap" aria-hidden="true">
+                  {[...arabCountries, ...arabCountries, ...arabCountries].map((country, index) => (
+                    <span
+                      key={`dup-${country.code}-${index}`}
+                      className="inline-flex items-center gap-1 mx-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm flex-shrink-0"
                     >
                       <span>{country.flag}</span>
                       <span>{country.nameAr}</span>
