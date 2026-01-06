@@ -427,30 +427,30 @@
     }
   }
 
-  /* Seamless Marquee */
-  .marquee-container {
-    display: flex;
-    overflow: hidden;
+  /* Full-width Seamless Marquee */
+  .marquee-wrapper {
     width: 100%;
+    overflow: hidden;
+    mask-image: linear-gradient(to left, transparent 0%, black 3%, black 97%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 3%, black 97%, transparent 100%);
   }
 
-  .marquee-content {
+  .marquee-track {
     display: flex;
-    flex-shrink: 0;
-    animation: scroll-rtl 20s linear infinite;
+    width: max-content;
+    animation: scroll-seamless 30s linear infinite;
   }
 
-  @keyframes scroll-rtl {
-    from {
-      transform: translateX(-100%);
+  @keyframes scroll-seamless {
+    0% {
+      transform: translateX(-50%);
     }
-    to {
-      transform: translateX(0);
+    100% {
+      transform: translateX(0%);
     }
   }
 
-  .mask-gradient {
-    mask-image: linear-gradient(to left, transparent 0%, black 5%, black 95%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 5%, black 95%, transparent 100%);
+  .marquee-track:hover {
+    animation-play-state: paused;
   }
 }
