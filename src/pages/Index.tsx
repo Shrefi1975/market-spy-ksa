@@ -26,6 +26,7 @@ interface KeywordResult {
   competition: "low" | "medium" | "high";
   cpc: number;
   trend: "up" | "down" | "stable";
+  searchIntent?: "commercial" | "informational" | "transactional" | "navigational";
 }
 
 interface AnalysisData {
@@ -44,7 +45,7 @@ const Index = () => {
   const { user, session, subscription, refreshSubscription } = useAuth();
   const navigate = useNavigate();
 
-  const handleAnalyze = async (data: { url: string; description: string; location: string }) => {
+  const handleAnalyze = async (data: { url: string; description: string; location: string; country: string }) => {
     // Check if user is logged in
     if (!user || !session) {
       toast({
@@ -61,20 +62,12 @@ const Index = () => {
     setAnalysis(undefined);
     
     try {
-      const locationMap: Record<string, string> = {
-        'saudi': 'السعودية',
-        'riyadh': 'الرياض',
-        'jeddah': 'جدة',
-        'dammam': 'الدمام',
-        'makkah': 'مكة المكرمة',
-        'madinah': 'المدينة المنورة',
-      };
-
       const { data: responseData, error } = await supabase.functions.invoke('analyze-keywords', {
         body: {
           url: data.url,
           description: data.description,
-          location: locationMap[data.location] || data.location,
+          location: data.location,
+          country: data.country,
         },
       });
 
@@ -103,6 +96,7 @@ const Index = () => {
         competition: k.competition || 'medium',
         cpc: k.cpc || 0,
         trend: k.trend || 'stable',
+        searchIntent: k.searchIntent || 'informational',
       }));
 
       setResults(mappedResults);
@@ -155,7 +149,7 @@ const Index = () => {
     searchVolume: r.searchVolume,
     competition: r.competition,
     trend: r.trend,
-    searchIntent: r.trend === "up" ? "شرائي" : "معلوماتي",
+    searchIntent: r.searchIntent === "commercial" ? "تجاري" : r.searchIntent === "transactional" ? "شرائي" : "معلوماتي",
     seoNotes: r.competition === "low" ? "فرصة ذهبية!" : r.competition === "high" ? "منافسة عالية" : "فرصة جيدة",
   }));
 

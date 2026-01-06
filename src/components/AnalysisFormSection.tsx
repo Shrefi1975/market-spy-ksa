@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, FileText, MapPin, Loader2, Sparkles } from "lucide-react";
+import { Search, FileText, MapPin, Loader2, Sparkles, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,22 +11,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { arabCountries, getCountryByCode } from "@/data/arabCountries";
 
 interface AnalysisFormSectionProps {
-  onAnalyze: (data: { url: string; description: string; location: string }) => void;
+  onAnalyze: (data: { url: string; description: string; location: string; country: string }) => void;
   isLoading: boolean;
+  defaultCountry?: string;
 }
 
-const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, isLoading }) => {
+const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, isLoading, defaultCountry = "sa" }) => {
   const [url, setUrl] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
+  const [country, setCountry] = useState(defaultCountry);
+  const [region, setRegion] = useState("");
+
+  const selectedCountry = getCountryByCode(country);
+  const hasRegions = selectedCountry?.regions && selectedCountry.regions.length > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (url && description && location) {
-      onAnalyze({ url, description, location });
+    if (url && description && country) {
+      const location = hasRegions && region ? region : "all";
+      onAnalyze({ url, description, location, country });
     }
+  };
+
+  const getButtonText = () => {
+    const countryName = selectedCountry?.nameAr || "العربي";
+    return `تحليل السوق ${countryName}`;
+  };
+
+  const getFormTitle = () => {
+    const countryName = selectedCountry?.nameAr || "العربي";
+    return (
+      <>
+        🚀 ابدأ تحليل <span className="gradient-text">السوق {countryName}</span> الآن
+      </>
+    );
   };
 
   return (
@@ -50,7 +71,7 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
               ابدأ الآن مجاناً
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              🚀 ابدأ تحليل <span className="gradient-text">السوق السعودي</span> الآن
+              {getFormTitle()}
             </h2>
             <p className="text-muted-foreground">
               أدخل بيانات متجرك واحصل على تحليل شامل للكلمات المفتاحية الذهبية
@@ -67,6 +88,51 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
             className="bg-card/90 backdrop-blur-xl rounded-3xl p-8 border border-border/50 shadow-xl"
           >
             <div className="grid gap-5">
+              {/* Country Selector */}
+              <div className="relative">
+                <label className="block text-sm font-medium mb-2 text-foreground">الدولة المستهدفة</label>
+                <div className="relative">
+                  <Globe className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 z-10" />
+                  <Select value={country} onValueChange={(val) => { setCountry(val); setRegion(""); }}>
+                    <SelectTrigger className="pr-12 h-12 text-base bg-background/80 border-border/50 rounded-xl">
+                      <SelectValue placeholder="اختر الدولة المستهدفة" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-80">
+                      {arabCountries.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{c.flag}</span>
+                            <span>{c.nameAr}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Region Selector (if available) */}
+              {hasRegions && (
+                <div className="relative">
+                  <label className="block text-sm font-medium mb-2 text-foreground">المنطقة المستهدفة</label>
+                  <div className="relative">
+                    <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 z-10" />
+                    <Select value={region} onValueChange={setRegion}>
+                      <SelectTrigger className="pr-12 h-12 text-base bg-background/80 border-border/50 rounded-xl">
+                        <SelectValue placeholder="اختر المنطقة (اختياري)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedCountry?.regions?.map((r) => (
+                          <SelectItem key={r.value} value={r.value}>
+                            {r.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
               <div className="relative">
                 <label className="block text-sm font-medium mb-2 text-foreground">رابط الموقع</label>
                 <div className="relative">
@@ -96,26 +162,6 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
                 </div>
               </div>
 
-              <div className="relative">
-                <label className="block text-sm font-medium mb-2 text-foreground">المنطقة المستهدفة</label>
-                <div className="relative">
-                  <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 z-10" />
-                  <Select value={location} onValueChange={setLocation} required>
-                    <SelectTrigger className="pr-12 h-12 text-base bg-background/80 border-border/50 rounded-xl">
-                      <SelectValue placeholder="اختر المنطقة المستهدفة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="saudi">السعودية (كامل المملكة)</SelectItem>
-                      <SelectItem value="riyadh">الرياض</SelectItem>
-                      <SelectItem value="jeddah">جدة</SelectItem>
-                      <SelectItem value="dammam">الدمام</SelectItem>
-                      <SelectItem value="makkah">مكة المكرمة</SelectItem>
-                      <SelectItem value="madinah">المدينة المنورة</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
               <Button 
                 type="submit" 
                 disabled={isLoading}
@@ -129,7 +175,7 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
                 ) : (
                   <>
                     <Search className="w-5 h-5 ml-2" />
-                    تحليل السوق السعودي
+                    {getButtonText()}
                   </>
                 )}
               </Button>

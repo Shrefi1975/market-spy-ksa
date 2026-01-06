@@ -220,6 +220,9 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
                       المنافسة
                     </TableHead>
                     <TableHead className="text-primary-foreground font-bold text-center py-5">
+                      نية البحث
+                    </TableHead>
+                    <TableHead className="text-primary-foreground font-bold text-center py-5">
                       الاتجاه
                     </TableHead>
                   </TableRow>
@@ -250,6 +253,9 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
                       </TableCell>
                       <TableCell className="text-center py-5">
                         {getCompetitionBadge(item.competition)}
+                      </TableCell>
+                      <TableCell className="text-center py-5">
+                        {getIntentBadge(item.searchIntent)}
                       </TableCell>
                       <TableCell className="text-center py-5">
                         <div className="flex justify-center items-center gap-1">

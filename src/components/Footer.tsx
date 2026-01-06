@@ -1,7 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { arabCountries } from "@/data/arabCountries";
 
 const Footer = () => {
+  // Show only featured countries in footer (Gulf + major markets)
+  const featuredCountries = arabCountries.filter(c => 
+    ['sa', 'ae', 'eg', 'kw', 'qa', 'bh', 'om', 'jo', 'ma'].includes(c.code)
+  );
+
   return (
     <footer className="bg-foreground text-primary-foreground py-16">
       <div className="container mx-auto px-4">
@@ -14,8 +20,8 @@ const Footer = () => {
               <span className="text-2xl font-bold">KeyRank</span>
             </div>
             <p className="text-primary-foreground/70 leading-relaxed max-w-md">
-              أداة تحليل السوق السعودي الأولى من نوعها. نساعدك على اكتشاف الكلمات المفتاحية الذهبية 
-              لتحقيق نجاح متجرك الإلكتروني في المملكة العربية السعودية.
+              أداة تحليل الأسواق العربية الأولى من نوعها. نساعدك على اكتشاف الكلمات المفتاحية الذهبية 
+              لتحقيق نجاح متجرك الإلكتروني في الوطن العربي.
             </p>
           </div>
 
@@ -71,7 +77,24 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
+        {/* Country Links for SEO */}
+        <div className="border-t border-primary-foreground/20 mt-12 pt-8">
+          <h4 className="text-lg font-bold mb-4 text-center">الأسواق المدعومة</h4>
+          <div className="flex flex-wrap justify-center gap-3">
+            {featuredCountries.map((c) => (
+              <Link
+                key={c.code}
+                to={`/country/${c.code}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground/80 hover:text-primary-foreground text-sm transition-colors"
+              >
+                <span>{c.flag}</span>
+                <span>{c.nameAr}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
           <p className="text-primary-foreground/60">
             © 2024 KeyRank. جميع الحقوق محفوظة.
           </p>
