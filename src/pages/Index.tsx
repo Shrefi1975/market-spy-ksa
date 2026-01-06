@@ -166,7 +166,7 @@ const Index = () => {
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <FeaturesSection />
       <HowItWorksSection />
-      <ResultsSection results={results} analysis={analysis} />
+      <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} />
       <TestimonialsSection />
       <PricingSection />
       <ContactFormSection />

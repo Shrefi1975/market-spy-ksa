@@ -1,8 +1,9 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, Users } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, Users, ArrowDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 interface KeywordResult {
   keyword: string;
   seoTitle: string;
@@ -32,11 +33,26 @@ interface AnalysisData {
 interface ResultsSectionProps {
   results: KeywordResult[];
   analysis?: AnalysisData;
+  isAnalysisComplete?: boolean;
 }
 const ResultsSection: React.FC<ResultsSectionProps> = ({
   results,
-  analysis
+  analysis,
+  isAnalysisComplete = false
 }) => {
+  const [showDownloadHint, setShowDownloadHint] = useState(false);
+
+  // Show download hint popup after 2 seconds when analysis is complete
+  useEffect(() => {
+    if (isAnalysisComplete && results.length > 0) {
+      const timer = setTimeout(() => {
+        setShowDownloadHint(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowDownloadHint(false);
+    }
+  }, [isAnalysisComplete, results.length]);
   const getCompetitionBadge = (competition: string) => {
     const labels = {
       low: "منخفضة",
@@ -977,6 +993,159 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
     a.remove();
     URL.revokeObjectURL(url);
   };
-  return;
+  // Don't render if no results
+  if (results.length === 0) {
+    return null;
+  }
+
+  const uniqueResults = getUniqueResults();
+
+  return (
+    <section id="results" className="py-16 bg-gradient-to-b from-background to-muted/30">
+      <div className="container mx-auto px-4">
+        {/* Section Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-10"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            تحليل مُكتمل
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            تم تحليل {uniqueResults.length} كلمة مفتاحية بنجاح. يمكنك الآن تحميل التقرير الكامل.
+          </p>
+        </motion.div>
+
+        {/* Download Button with Animated Hint */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex flex-col items-center gap-4 mb-10"
+        >
+          <div className="relative">
+            <Popover open={showDownloadHint} onOpenChange={setShowDownloadHint}>
+              <PopoverTrigger asChild>
+                <Button 
+                  onClick={handleDownloadHTML}
+                  size="lg"
+                  className="bg-gradient-to-l from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Download className="w-6 h-6 ml-2" />
+                  تنزيل التقرير الكامل
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent 
+                side="top" 
+                className="bg-gradient-to-br from-primary to-primary/80 text-white border-none shadow-2xl p-4 rounded-xl max-w-xs"
+                sideOffset={10}
+              >
+                <AnimatePresence>
+                  {showDownloadHint && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex flex-col items-center gap-3"
+                    >
+                      <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse" />
+                      <p className="text-center font-semibold text-sm">
+                        🎉 تحليلك جاهز! اضغط هنا لتنزيل تقريرك الاحترافي
+                      </p>
+                      <ArrowDown className="w-5 h-5 animate-bounce" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </PopoverContent>
+            </Popover>
+
+            {/* Pulsing ring animation */}
+            {showDownloadHint && (
+              <motion.div
+                initial={{ scale: 1, opacity: 0.8 }}
+                animate={{ scale: 1.3, opacity: 0 }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="absolute inset-0 rounded-xl border-2 border-emerald-400 pointer-events-none"
+              />
+            )}
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            التقرير بصيغة HTML يمكنك فتحه في أي متصفح
+          </p>
+        </motion.div>
+
+        {/* Quick Stats */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
+        >
+          {[
+            { label: "الكلمات المفتاحية", value: uniqueResults.length, color: "from-blue-500 to-indigo-600" },
+            { label: "منافسة منخفضة", value: uniqueResults.filter(r => r.competition === "low").length, color: "from-emerald-500 to-teal-600" },
+            { label: "اتجاه صاعد", value: uniqueResults.filter(r => r.trend === "up").length, color: "from-amber-500 to-orange-600" },
+            { label: "فرص ذهبية", value: uniqueResults.filter(r => r.competition === "low" && r.trend === "up").length, color: "from-purple-500 to-pink-600" },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 + index * 0.1 }}
+              className={`bg-gradient-to-br ${stat.color} p-6 rounded-xl text-white text-center shadow-lg`}
+            >
+              <div className="text-3xl md:text-4xl font-bold mb-2">{stat.value}</div>
+              <div className="text-sm opacity-90">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Results Preview Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="bg-card rounded-xl border border-border shadow-lg overflow-hidden"
+        >
+          <div className="p-4 border-b border-border bg-muted/30">
+            <h3 className="text-lg font-bold text-foreground">معاينة النتائج (أول 5 كلمات)</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="text-right font-bold">#</TableHead>
+                  <TableHead className="text-right font-bold">الكلمة المفتاحية</TableHead>
+                  <TableHead className="text-right font-bold">المنافسة</TableHead>
+                  <TableHead className="text-right font-bold">الاتجاه</TableHead>
+                  <TableHead className="text-right font-bold">حجم البحث</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {uniqueResults.slice(0, 5).map((result, index) => (
+                  <TableRow key={index} className="hover:bg-muted/30 transition-colors">
+                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableCell className="font-semibold text-foreground">{result.keyword}</TableCell>
+                    <TableCell>{getCompetitionBadge(result.competition)}</TableCell>
+                    <TableCell>{getTrendIcon(result.trend)}</TableCell>
+                    <TableCell className="font-medium">{result.searchVolume.toLocaleString('ar-SA')}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          {uniqueResults.length > 5 && (
+            <div className="p-4 text-center border-t border-border bg-muted/30">
+              <p className="text-muted-foreground text-sm">
+                و {uniqueResults.length - 5} كلمات أخرى في التقرير الكامل...
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
 };
 export default ResultsSection;
