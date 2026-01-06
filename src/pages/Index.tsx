@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import SampleAnalysisTable from "@/components/SampleAnalysisTable";
+import PreviewAnalysisSection from "@/components/PreviewAnalysisSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import PricingSection from "@/components/PricingSection";
+import ContactFormSection from "@/components/ContactFormSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpgradeDialog from "@/components/UpgradeDialog";
@@ -144,18 +145,31 @@ const Index = () => {
     }
   };
 
+  // Map results to PreviewAnalysisSection format
+  const mappedPreviewResults = results.map(r => ({
+    keyword: r.keyword,
+    seoTitle: r.seoTitle,
+    metaDescription: r.metaDescription,
+    searchVolume: r.searchVolume,
+    competition: r.competition,
+    trend: r.trend,
+    searchIntent: r.trend === "up" ? "شرائي" : "معلوماتي",
+    seoNotes: r.competition === "low" ? "فرصة ذهبية!" : r.competition === "high" ? "منافسة عالية" : "فرصة جيدة",
+  }));
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <WhatsAppButton />
       <UpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       <HeroSection onAnalyze={handleAnalyze} isLoading={isLoading} />
+      <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <FeaturesSection />
       <HowItWorksSection />
-      <SampleAnalysisTable />
       <ResultsSection results={results} analysis={analysis} />
       <TestimonialsSection />
       <PricingSection />
+      <ContactFormSection />
       <Footer />
     </div>
   );
