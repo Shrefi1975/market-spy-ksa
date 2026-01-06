@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        tajawal: ['Tajawal', 'sans-serif'],
+        'noto-kufi': ['"Noto Kufi Arabic"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

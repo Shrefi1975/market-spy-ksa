@@ -150,9 +150,9 @@ const Index = () => {
       <WhatsAppButton />
       <UpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       <HeroSection onAnalyze={handleAnalyze} isLoading={isLoading} />
-      <SampleAnalysisTable />
       <FeaturesSection />
       <HowItWorksSection />
+      <SampleAnalysisTable />
       <ResultsSection results={results} analysis={analysis} />
       <TestimonialsSection />
       <PricingSection />
