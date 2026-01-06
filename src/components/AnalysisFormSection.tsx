@@ -191,8 +191,8 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
               </Button>
             </div>
 
-            <p className="text-center text-primary font-bold text-base mt-4">
-              🎁 مجاناً للأبد • لا يتطلب تسجيل
+            <p className="text-center text-muted-foreground text-sm mt-4">
+              ✨ تجربة مجانية واحدة • لا يتطلب بطاقة ائتمان
             </p>
           </motion.form>
         </motion.div>

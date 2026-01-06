@@ -427,30 +427,16 @@
     }
   }
 
-  /* Full-width Seamless Marquee */
-  .marquee-wrapper {
-    width: 100%;
-    overflow: hidden;
-    mask-image: linear-gradient(to left, transparent 0%, black 3%, black 97%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, black 3%, black 97%, transparent 100%);
-  }
-
-  .marquee-track {
-    display: flex;
-    width: max-content;
-    animation: scroll-seamless 30s linear infinite;
-  }
-
-  @keyframes scroll-seamless {
+  @keyframes marquee {
     0% {
-      transform: translateX(-50%);
+      transform: translateX(0);
     }
     100% {
-      transform: translateX(0%);
+      transform: translateX(-50%);
     }
   }
 
-  .marquee-track:hover {
-    animation-play-state: paused;
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
   }
 }
