@@ -92,28 +92,6 @@ const HeroSection: React.FC = () => {
               ))}
             </motion.div>
 
-            {/* Countries Marquee */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="mt-6 overflow-hidden"
-            >
-              <p className="text-white/60 text-xs mb-2 text-center">الأسواق المدعومة:</p>
-              <div className="relative">
-                <div className="flex animate-marquee whitespace-nowrap">
-                  {[...arabCountries, ...arabCountries].map((country, index) => (
-                    <span
-                      key={`${country.code}-${index}`}
-                      className="inline-flex items-center gap-1 mx-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm"
-                    >
-                      <span>{country.flag}</span>
-                      <span>{country.nameAr}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
 
           {/* Right Side - SEO Animation */}
@@ -207,6 +185,28 @@ const HeroSection: React.FC = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Full-width Countries Marquee */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="relative z-10 mt-8 overflow-hidden"
+      >
+        <div className="marquee-container">
+          <div className="marquee-content">
+            {[...arabCountries, ...arabCountries, ...arabCountries, ...arabCountries].map((country, index) => (
+              <span
+                key={`${country.code}-${index}`}
+                className="country-tag"
+              >
+                <span className="text-lg">{country.flag}</span>
+                <span>{country.nameAr}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 };
