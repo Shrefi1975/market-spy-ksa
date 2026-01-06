@@ -194,19 +194,10 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
                       وصف Meta
                     </TableHead>
                     <TableHead className="text-primary-foreground font-bold text-center py-5">
-                      حجم البحث
-                    </TableHead>
-                    <TableHead className="text-primary-foreground font-bold text-center py-5">
                       المنافسة
                     </TableHead>
                     <TableHead className="text-primary-foreground font-bold text-center py-5">
-                      نية البحث
-                    </TableHead>
-                    <TableHead className="text-primary-foreground font-bold text-center py-5">
                       الاتجاه
-                    </TableHead>
-                    <TableHead className="text-primary-foreground font-bold text-right py-5 min-w-[180px]">
-                      ملاحظات SEO
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -235,15 +226,7 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
                         </span>
                       </TableCell>
                       <TableCell className="text-center py-5">
-                        <span className="font-bold text-foreground">
-                          {item.searchVolume.toLocaleString('ar-SA')}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center py-5">
                         {getCompetitionBadge(item.competition)}
-                      </TableCell>
-                      <TableCell className="text-center py-5">
-                        {getIntentBadge(item.searchIntent)}
                       </TableCell>
                       <TableCell className="text-center py-5">
                         <div className="flex justify-center items-center gap-1">
@@ -252,11 +235,6 @@ const PreviewAnalysisSection: React.FC<PreviewAnalysisSectionProps> = ({ results
                             {item.trend === "up" ? "صاعد" : item.trend === "down" ? "هابط" : "مستقر"}
                           </span>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-right py-5">
-                        <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
-                          {item.seoNotes}
-                        </span>
                       </TableCell>
                     </motion.tr>
                   ))}
