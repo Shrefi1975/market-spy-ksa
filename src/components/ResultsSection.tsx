@@ -93,12 +93,17 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     }
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     try {
       // Remove duplicates based on keyword
       const uniqueResults = results.filter((result, index, self) =>
         index === self.findIndex(r => r.keyword === result.keyword)
       );
+
+      if (uniqueResults.length === 0) {
+        alert('لا توجد نتائج لتحميلها');
+        return;
+      }
 
       // Create PDF document in landscape for better table display
       const doc = new jsPDF({
@@ -412,9 +417,10 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
       const fileName = `KeyRank-SEO-Report-${new Date().toISOString().split('T')[0]}.pdf`;
       doc.save(fileName);
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`حدث خطأ أثناء إنشاء التقرير: ${errorMessage}. يرجى المحاولة مرة أخرى.`);
     }
   };
 
