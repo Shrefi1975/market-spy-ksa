@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import SampleAnalysisTable from "@/components/SampleAnalysisTable";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
@@ -149,6 +150,7 @@ const Index = () => {
       <WhatsAppButton />
       <UpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       <HeroSection onAnalyze={handleAnalyze} isLoading={isLoading} />
+      <SampleAnalysisTable />
       <FeaturesSection />
       <HowItWorksSection />
       <ResultsSection results={results} analysis={analysis} />
