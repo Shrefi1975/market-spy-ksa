@@ -3,29 +3,39 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { motion } from "framer-motion";
-import { Target, Users, Award, Lightbulb } from "lucide-react";
+import { Target, Users, Award, Lightbulb, Search, TrendingUp, BarChart3, LineChart, Sparkles } from "lucide-react";
 
 const values = [
   {
     icon: Target,
     title: "الدقة",
-    description: "نلتزم بتقديم بيانات دقيقة ومحدثة تساعدك على اتخاذ قرارات صحيحة",
+    description: "نلتزم بتقديم بيانات دقيقة ومحدثة تساعدك على اتخاذ قرارات صحيحة في جميع الأسواق العربية",
   },
   {
     icon: Users,
     title: "العميل أولاً",
-    description: "نضع احتياجات عملائنا في صدارة أولوياتنا ونسعى لتحقيق نجاحهم",
+    description: "نضع احتياجات عملائنا في صدارة أولوياتنا ونسعى لتحقيق نجاحهم في كافة الدول العربية",
   },
   {
     icon: Award,
     title: "الجودة",
-    description: "نسعى للتميز في كل ما نقدمه من خدمات وحلول تقنية متطورة",
+    description: "نسعى للتميز في كل ما نقدمه من خدمات وحلول تقنية متطورة تناسب كل سوق عربي",
   },
   {
     icon: Lightbulb,
     title: "الابتكار",
-    description: "نطور أدواتنا باستمرار لمواكبة التغيرات في السوق السعودي",
+    description: "نطور أدواتنا باستمرار لمواكبة التغيرات في الأسواق العربية المختلفة",
   },
+];
+
+// Floating icons for animation
+const floatingIcons = [
+  { Icon: Search, delay: 0 },
+  { Icon: TrendingUp, delay: 0.5 },
+  { Icon: BarChart3, delay: 1 },
+  { Icon: Target, delay: 1.5 },
+  { Icon: LineChart, delay: 2 },
+  { Icon: Sparkles, delay: 2.5 },
 ];
 
 const About = () => {
@@ -46,12 +56,12 @@ const About = () => {
               من <span className="gradient-text">نحن</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              نحن فريق سعودي متخصص في تحليل السوق الرقمي وتحسين محركات البحث، 
-              نسعى لمساعدة أصحاب الأعمال في المملكة العربية السعودية على تحقيق النجاح الرقمي
+              نحن فريق عربي متخصص في تحليل الأسواق الرقمية وتحسين محركات البحث، 
+              نسعى لمساعدة أصحاب الأعمال في جميع الدول العربية على تحقيق النجاح الرقمي
             </p>
           </motion.div>
 
-          {/* Story Section */}
+          {/* Story Section with Animated Hero */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -64,28 +74,108 @@ const About = () => {
                 قصتنا
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                انطلقت KeyRank من جدة عام 2024 برؤية واضحة: تمكين أصحاب الأعمال السعوديين 
-                من فهم سلوك المستهلك المحلي واستهداف الكلمات المفتاحية الأكثر ربحية.
+                انطلقت KeyRank عام 2024 برؤية واضحة: تمكين أصحاب الأعمال العرب 
+                من فهم سلوك المستهلك المحلي واستهداف الكلمات المفتاحية الأكثر ربحية في 18 دولة عربية.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                لاحظنا أن معظم أدوات SEO العالمية لا تفهم خصوصية السوق السعودي - 
-                المواسم المحلية مثل رمضان واليوم الوطني، واللهجات المختلفة، وسلوك البحث الفريد.
+                لاحظنا أن معظم أدوات SEO العالمية لا تفهم خصوصية الأسواق العربية - 
+                المواسم المحلية مثل رمضان والأعياد الوطنية، واللهجات المختلفة، وسلوك البحث الفريد لكل دولة.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                لذلك أنشأنا KeyRank كأداة مصممة خصيصاً للسوق السعودي، 
-                مبنية على بيانات حقيقية وتحليل عميق لاحتياجات السوق المحلي.
+                لذلك أنشأنا KeyRank كأداة مصممة خصيصاً للأسواق العربية، 
+                مبنية على بيانات حقيقية وتحليل عميق لاحتياجات كل سوق محلي.
               </p>
             </div>
-            <div className="relative">
-              <div className="aspect-square rounded-3xl gradient-bg opacity-20 absolute inset-0" />
-              <div className="aspect-square rounded-3xl border-2 border-primary/30 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-8xl font-bold gradient-text mb-4">K</div>
-                  <div className="text-2xl font-bold">KeyRank</div>
-                  <div className="text-muted-foreground">جدة، السعودية</div>
-                </div>
+            
+            {/* Animated SEO Visual */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative h-[350px] lg:h-[400px]"
+            >
+              {/* Central SEO Element */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Orbiting circles */}
+                <div className="absolute w-[280px] h-[280px] lg:w-[350px] lg:h-[350px] rounded-full border border-primary/20 animate-[spin_30s_linear_infinite]" />
+                <div className="absolute w-[200px] h-[200px] lg:w-[260px] lg:h-[260px] rounded-full border border-primary/30 animate-[spin_20s_linear_infinite_reverse]" />
+                <div className="absolute w-[120px] h-[120px] lg:w-[170px] lg:h-[170px] rounded-full border border-primary/40 animate-[spin_15s_linear_infinite]" />
+
+                {/* Central SEO Text */}
+                <motion.div
+                  className="relative z-10 text-center"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full gradient-bg flex items-center justify-center shadow-glow">
+                    <span className="text-2xl lg:text-3xl font-bold text-white">SEO</span>
+                  </div>
+                </motion.div>
+
+                {/* Floating Icons around */}
+                {floatingIcons.map(({ Icon, delay }, index) => {
+                  const angle = (index * 60) * (Math.PI / 180);
+                  const radius = 100;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      className="absolute"
+                      style={{ 
+                        left: `calc(50% + ${x}px)`, 
+                        top: `calc(50% + ${y}px)`,
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{
+                        opacity: [0.5, 1, 0.5],
+                        scale: [1, 1.2, 1],
+                        y: [0, -10, 0],
+                      }}
+                      transition={{
+                        duration: 4,
+                        delay,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <div className="p-2 lg:p-3 rounded-xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg">
+                        <Icon 
+                          size={18} 
+                          className="text-primary lg:w-5 lg:h-5"
+                          strokeWidth={1.5}
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
-            </div>
+
+              {/* Floating particles */}
+              {[...Array(10)].map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute w-2 h-2 rounded-full bg-primary/40"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    y: [0, -20, 0],
+                    opacity: [0, 0.8, 0],
+                    scale: [0, 1.5, 0],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    delay: Math.random() * 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </motion.div>
           </motion.div>
 
           {/* Values Section */}
@@ -129,8 +219,8 @@ const About = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 p-12 rounded-3xl gradient-bg"
           >
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">200+</div>
-              <div className="text-primary-foreground/80">عميل سعودي</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">18</div>
+              <div className="text-primary-foreground/80">دولة عربية</div>
             </div>
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">50K+</div>

@@ -37,15 +37,25 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({ onAnalyze, is
   };
 
   const getButtonText = () => {
+    if (!country || country === "") {
+      return "ابدأ الآن بالتحليل";
+    }
     const countryName = selectedCountry?.nameAr || "العربي";
-    return `تحليل السوق ${countryName}`;
+    return `ابدأ بتحليل السوق ${countryName}`;
   };
 
   const getFormTitle = () => {
-    const countryName = selectedCountry?.nameAr || "العربي";
+    const countryName = selectedCountry?.nameAr || "";
+    if (!countryName) {
+      return (
+        <>
+          🚀 <span className="gradient-text">ابدأ الآن بالتحليل</span>
+        </>
+      );
+    }
     return (
       <>
-        🚀 ابدأ تحليل <span className="gradient-text">السوق {countryName}</span> الآن
+        🚀 ابدأ بتحليل <span className="gradient-text">السوق {countryName}</span>
       </>
     );
   };

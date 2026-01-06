@@ -24,7 +24,6 @@ const Navbar = () => {
     { to: "/about", label: "من نحن" },
     { to: "/services", label: "الخدمات" },
     { to: "/blog", label: "المدونة" },
-    { to: "/pricing", label: "الأسعار" },
     { to: "/contact", label: "تواصل معنا" },
   ];
 

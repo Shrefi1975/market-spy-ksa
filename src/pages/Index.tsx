@@ -7,9 +7,6 @@ import PreviewAnalysisSection from "@/components/PreviewAnalysisSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import PricingSection from "@/components/PricingSection";
-import ContactFormSection from "@/components/ContactFormSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -17,7 +14,7 @@ import UpgradeDialog from "@/components/UpgradeDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-
+import { getCountryByCode } from "@/data/arabCountries";
 interface KeywordResult {
   keyword: string;
   seoTitle: string;
@@ -41,11 +38,15 @@ const Index = () => {
   const [analysis, setAnalysis] = useState<AnalysisData | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<string>("sa");
   const { toast } = useToast();
   const { user, session, subscription, refreshSubscription } = useAuth();
   const navigate = useNavigate();
 
   const handleAnalyze = async (data: { url: string; description: string; location: string; country: string }) => {
+    // Store selected country
+    setSelectedCountry(data.country);
+    
     // Check if user is logged in
     if (!user || !session) {
       toast({
@@ -153,6 +154,9 @@ const Index = () => {
     seoNotes: r.competition === "low" ? "فرصة ذهبية!" : r.competition === "high" ? "منافسة عالية" : "فرصة جيدة",
   }));
 
+  const countryData = getCountryByCode(selectedCountry);
+  const countryName = countryData?.nameAr || "العربي";
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -161,12 +165,9 @@ const Index = () => {
       <HeroSection />
       <AnalysisFormSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
+      <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
       <FeaturesSection />
       <HowItWorksSection />
-      <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} />
-      <TestimonialsSection />
-      <PricingSection />
-      <ContactFormSection />
       <FAQSection />
       <Footer />
     </div>
