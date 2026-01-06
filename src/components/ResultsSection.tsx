@@ -1,26 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Download,
-  Lightbulb,
-  Target,
-  Calendar,
-  BarChart3,
-  Users,
-} from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Download, Lightbulb, Target, Calendar, BarChart3, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 interface KeywordResult {
   keyword: string;
   seoTitle: string;
@@ -32,14 +14,12 @@ interface KeywordResult {
   searchIntent?: "commercial" | "informational" | "transactional";
   seoNotes?: string;
 }
-
 interface Competitor {
   name: string;
   website?: string;
   strengths?: string;
   weaknesses?: string;
 }
-
 interface AnalysisData {
   marketOverview?: string;
   opportunities?: string[];
@@ -49,36 +29,42 @@ interface AnalysisData {
   targetAudience?: string;
   competitors?: Competitor[];
 }
-
 interface ResultsSectionProps {
   results: KeywordResult[];
   analysis?: AnalysisData;
 }
-
-const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) => {
+const ResultsSection: React.FC<ResultsSectionProps> = ({
+  results,
+  analysis
+}) => {
   const getCompetitionBadge = (competition: string) => {
     const labels = {
       low: "منخفضة",
       medium: "متوسطة",
-      high: "مرتفعة",
+      high: "مرتفعة"
     };
     return <span className={`competition-${competition}`}>{labels[competition as keyof typeof labels]}</span>;
   };
-
   const getSearchIntentBadge = (intent?: string) => {
     const labels = {
-      commercial: { label: "تجارية", class: "bg-blue-500/20 text-blue-600" },
-      informational: { label: "معلوماتية", class: "bg-purple-500/20 text-purple-600" },
-      transactional: { label: "شرائية", class: "bg-emerald-500/20 text-emerald-600" },
+      commercial: {
+        label: "تجارية",
+        class: "bg-blue-500/20 text-blue-600"
+      },
+      informational: {
+        label: "معلوماتية",
+        class: "bg-purple-500/20 text-purple-600"
+      },
+      transactional: {
+        label: "شرائية",
+        class: "bg-emerald-500/20 text-emerald-600"
+      }
     };
     const intentData = labels[intent as keyof typeof labels] || labels.informational;
-    return (
-      <span className={`${intentData.class} px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap`}>
+    return <span className={`${intentData.class} px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap`}>
         {intentData.label}
-      </span>
-    );
+      </span>;
   };
-
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":
@@ -89,78 +75,74 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
         return <Minus className="w-5 h-5 trend-stable" />;
     }
   };
-
-  const getUniqueResults = () =>
-    results.filter((result, index, self) => index === self.findIndex((r) => r.keyword === result.keyword));
-
+  const getUniqueResults = () => results.filter((result, index, self) => index === self.findIndex(r => r.keyword === result.keyword));
   const getCompetitionLabelAr = (competition: string) => {
-    const labels = { low: "منخفض", medium: "متوسط", high: "مرتفع" };
+    const labels = {
+      low: "منخفض",
+      medium: "متوسط",
+      high: "مرتفع"
+    };
     return labels[competition as keyof typeof labels] || "متوسط";
   };
-
   const getIntentLabelAr = (intent?: string) => {
-    const labels = { commercial: "تجاري", informational: "معلوماتي", transactional: "شرائي" };
+    const labels = {
+      commercial: "تجاري",
+      informational: "معلوماتي",
+      transactional: "شرائي"
+    };
     return labels[intent as keyof typeof labels] || "معلوماتي";
   };
-
   const getTrendLabelAr = (trend: string) => {
-    const labels = { up: "صاعد", down: "هابط", stable: "مستقر" };
+    const labels = {
+      up: "صاعد",
+      down: "هابط",
+      stable: "مستقر"
+    };
     return labels[trend as keyof typeof labels] || "مستقر";
   };
 
   // Calculate visual metrics for progress bars
   const calculateVisualMetrics = () => {
     const uniqueResults = getUniqueResults();
-    if (uniqueResults.length === 0) return { opportunity: 0, competition: 0, difficulty: 0 };
-
-    const lowComp = uniqueResults.filter((r) => r.competition === "low").length;
-    const highComp = uniqueResults.filter((r) => r.competition === "high").length;
-    const upTrend = uniqueResults.filter((r) => r.trend === "up").length;
+    if (uniqueResults.length === 0) return {
+      opportunity: 0,
+      competition: 0,
+      difficulty: 0
+    };
+    const lowComp = uniqueResults.filter(r => r.competition === "low").length;
+    const highComp = uniqueResults.filter(r => r.competition === "high").length;
+    const upTrend = uniqueResults.filter(r => r.trend === "up").length;
     const total = uniqueResults.length;
 
     // Opportunity score: based on low competition + upward trends
-    const opportunityScore = Math.round(((lowComp * 2 + upTrend) / (total * 3)) * 100);
-    
-    // Competition level: based on high competition keywords
-    const competitionLevel = Math.round((highComp / total) * 100);
-    
-    // Difficulty: inverse of opportunity, affected by high competition
-    const difficultyScore = Math.round(((highComp * 2 + (total - upTrend)) / (total * 3)) * 100);
+    const opportunityScore = Math.round((lowComp * 2 + upTrend) / (total * 3) * 100);
 
+    // Competition level: based on high competition keywords
+    const competitionLevel = Math.round(highComp / total * 100);
+
+    // Difficulty: inverse of opportunity, affected by high competition
+    const difficultyScore = Math.round((highComp * 2 + (total - upTrend)) / (total * 3) * 100);
     return {
-      opportunity: Math.min(100, Math.max(0, opportunityScore + 30)), // Boost for better visualization
+      opportunity: Math.min(100, Math.max(0, opportunityScore + 30)),
+      // Boost for better visualization
       competition: Math.min(100, Math.max(0, competitionLevel + 20)),
-      difficulty: Math.min(100, Math.max(0, difficultyScore)),
+      difficulty: Math.min(100, Math.max(0, difficultyScore))
     };
   };
-
   const handleDownloadHTML = async () => {
     const uniqueResults = getUniqueResults();
-
     if (uniqueResults.length === 0) {
       alert("لا توجد نتائج لتحميلها");
       return;
     }
-
-    const escapeHtml = (value: string) =>
-      value
-        .split("&").join("&amp;")
-        .split("<").join("&lt;")
-        .split(">").join("&gt;")
-        .split('"').join("&quot;")
-        .split("'").join("&#039;");
-
+    const escapeHtml = (value: string) => value.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;").split('"').join("&quot;").split("'").join("&#039;");
     const dateStrAr = new Date().toLocaleDateString("ar-SA", {
       year: "numeric",
       month: "long",
-      day: "numeric",
+      day: "numeric"
     });
-
     const metrics = calculateVisualMetrics();
-
-    const rows = uniqueResults
-      .map(
-        (r, i) => `
+    const rows = uniqueResults.map((r, i) => `
           <tr>
             <td class="num">${i + 1}</td>
             <td class="rtl text keyword">${escapeHtml(r.keyword)}</td>
@@ -172,26 +154,17 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
             <td class="num">${r.cpc.toFixed(2)} ر.س</td>
             <td class="trend-${r.trend}">${escapeHtml(getTrendLabelAr(r.trend))}</td>
             <td class="rtl text notes">${escapeHtml(r.seoNotes || "استهداف الكلمة في العنوان والوصف مع الروابط الداخلية")}</td>
-          </tr>`
-      )
-      .join("\n");
-
-    const marketOverview = analysis?.marketOverview
-      ? `<section class="card market-overview">
+          </tr>`).join("\n");
+    const marketOverview = analysis?.marketOverview ? `<section class="card market-overview">
            <div class="card-header">
              <div class="card-icon market-icon">📊</div>
              <h2>نظرة عامة على السوق</h2>
            </div>
            <p class="rtl">${escapeHtml(analysis.marketOverview)}</p>
-         </section>`
-      : "";
-
+         </section>` : "";
     const listBlock = (title: string, items?: string[], icon?: string, colorClass?: string) => {
       if (!items || items.length === 0) return "";
-      const lis = items
-        .slice(0, 6)
-        .map((x) => `<li class="rtl">${escapeHtml(x)}</li>`)
-        .join("\n");
+      const lis = items.slice(0, 6).map(x => `<li class="rtl">${escapeHtml(x)}</li>`).join("\n");
       return `<section class="card ${colorClass || ''}">
         <div class="card-header">
           <div class="card-icon">${icon || '📌'}</div>
@@ -200,9 +173,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
         <ul>${lis}</ul>
       </section>`;
     };
-
-    const competitorsSection = analysis?.competitors && analysis.competitors.length > 0
-      ? `<!-- Section: Competitors Analysis -->
+    const competitorsSection = analysis?.competitors && analysis.competitors.length > 0 ? `<!-- Section: Competitors Analysis -->
          <section class="section-block">
            <div class="section-header">
              <h2 class="section-title">تحليل المنافسين في السوق</h2>
@@ -214,7 +185,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
                <h3>المنافسون الرئيسيون</h3>
              </div>
              <div class="competitors-grid">
-               ${analysis.competitors.slice(0, 6).map((comp) => `
+               ${analysis.competitors.slice(0, 6).map(comp => `
                  <div class="competitor-card">
                    <h4>${escapeHtml(comp.name)}</h4>
                    ${comp.website ? `<a href="${comp.website.startsWith('http') ? comp.website : 'https://' + comp.website}" class="comp-website">${escapeHtml(comp.website)}</a>` : ''}
@@ -224,11 +195,8 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
                `).join('\n')}
              </div>
            </div>
-         </section>`
-      : "";
-    
-    const analysisInsightsSection = (analysis?.marketOverview || analysis?.opportunities?.length || analysis?.recommendations?.length || analysis?.seasonalTips?.length)
-      ? `<!-- Section: Strategic Insights -->
+         </section>` : "";
+    const analysisInsightsSection = analysis?.marketOverview || analysis?.opportunities?.length || analysis?.recommendations?.length || analysis?.seasonalTips?.length ? `<!-- Section: Strategic Insights -->
          <section class="section-block">
            <div class="section-header">
              <h2 class="section-title">رؤى استراتيجية للتسويق الرقمي</h2>
@@ -240,8 +208,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
              ${listBlock("توصيات الخبراء", analysis?.recommendations, "💡", "recommendations")}
              ${listBlock("استراتيجيات موسمية", analysis?.seasonalTips, "📅", "seasonal-tips")}
            </div>
-         </section>`
-      : "";
+         </section>` : "";
 
     // Visual Analysis Section with Progress Bars
     const visualAnalysisSection = `
@@ -288,7 +255,6 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
           </div>
         </div>
       </section>`;
-
     const html = `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -999,8 +965,9 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
   </div>
 </body>
 </html>`;
-
-    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const blob = new Blob([html], {
+      type: "text/html;charset=utf-8"
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -1010,266 +977,6 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({ results, analysis }) =>
     a.remove();
     URL.revokeObjectURL(url);
   };
-
-
-  return (
-    <section className="py-24 bg-muted/30" id="results">
-      <div className="container mx-auto px-4">
-        {/* Section 1: Keywords Table - Main SEO Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            تحليل <span className="gradient-text">الكلمات المفتاحية</span> للسوق السعودي
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            اكتشف أفضل الكلمات المفتاحية لتحسين ظهورك في محركات البحث وزيادة الزيارات العضوية لموقعك
-          </p>
-        </motion.div>
-
-        {/* Keywords Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-card rounded-2xl shadow-card border border-border/50 overflow-hidden mb-16"
-        >
-          <div className="overflow-x-auto professional-table">
-            <Table className="border-collapse w-full min-w-[1200px]">
-              <TableHeader>
-                <TableRow className="table-header border-b-2 border-primary/30">
-                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">الكلمة المفتاحية الرئيسية</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">عنوان SEO</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">وصف Meta</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">حجم البحث الشهري</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">مستوى المنافسة</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">نية البحث</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">تكلفة النقرة</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-center border border-primary/20 py-4 px-3 whitespace-nowrap">اتجاه الطلب</TableHead>
-                  <TableHead className="text-primary-foreground font-bold text-right border border-primary/20 py-4 px-4">ملاحظات تحسين SEO</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {results.map((result, index) => (
-                  <TableRow 
-                    key={index}
-                    className={`hover:bg-muted/50 transition-colors ${index % 2 === 0 ? 'bg-muted/20' : 'bg-card'}`}
-                  >
-                    <TableCell className="font-bold text-primary border border-border/50 py-3 px-4 text-right">
-                      {result.keyword}
-                    </TableCell>
-                    <TableCell className="border border-border/50 py-3 px-4 text-right max-w-[200px]">
-                      <span className="line-clamp-2">{result.seoTitle}</span>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground border border-border/50 py-3 px-4 text-right max-w-[250px]">
-                      <span className="line-clamp-2">{result.metaDescription}</span>
-                    </TableCell>
-                    <TableCell className="text-center font-medium border border-border/50 py-3 px-3">
-                      <span className="text-lg font-bold text-primary">{result.searchVolume.toLocaleString("ar-SA")}</span>
-                    </TableCell>
-                    <TableCell className="text-center border border-border/50 py-3 px-3">
-                      {getCompetitionBadge(result.competition)}
-                    </TableCell>
-                    <TableCell className="text-center border border-border/50 py-3 px-3">
-                      {getSearchIntentBadge(result.searchIntent)}
-                    </TableCell>
-                    <TableCell className="text-center font-medium border border-border/50 py-3 px-3 whitespace-nowrap">
-                      {result.cpc.toFixed(2)} ر.س
-                    </TableCell>
-                    <TableCell className="text-center border border-border/50 py-3 px-3">
-                      <div className="flex justify-center items-center gap-1">
-                        {getTrendIcon(result.trend)}
-                        <span className={`text-sm font-medium ${
-                          result.trend === 'up' ? 'text-emerald-500' : 
-                          result.trend === 'down' ? 'text-rose-500' : 'text-muted-foreground'
-                        }`}>
-                          {result.trend === 'up' ? 'صاعد' : result.trend === 'down' ? 'نازل' : 'ثابت'}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="border border-border/50 py-3 px-4 text-right text-sm text-muted-foreground max-w-[200px]">
-                      <span className="line-clamp-2">{result.seoNotes || 'استهداف الكلمة في العنوان والوصف مع الروابط الداخلية'}</span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </motion.div>
-
-        {/* Section 2: Competitors Analysis */}
-        {analysis?.competitors && analysis.competitors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mb-16"
-          >
-            <div className="text-center mb-8">
-              <h3 className="text-2xl md:text-4xl font-bold mb-4">
-                تحليل <span className="gradient-text">المنافسين</span> في السوق
-              </h3>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                دراسة شاملة لأبرز المنافسين في مجالك مع تحديد نقاط القوة والضعف لكل منافس
-              </p>
-            </div>
-            <div className="bg-card rounded-2xl p-6 border border-border/50">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-orange-500" />
-                </div>
-                <h4 className="font-bold text-xl">المنافسون الرئيسيون</h4>
-              </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {analysis.competitors.map((comp, i) => (
-                  <div key={i} className="bg-muted/30 rounded-xl p-4 border border-border/30">
-                    <h5 className="font-bold text-primary mb-2">{comp.name}</h5>
-                    {comp.website && (
-                      <a 
-                        href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-500 hover:underline block mb-2"
-                      >
-                        {comp.website}
-                      </a>
-                    )}
-                    {comp.strengths && (
-                      <p className="text-sm text-muted-foreground mb-1">
-                        <span className="text-green-500 font-medium">نقاط القوة: </span>
-                        {comp.strengths}
-                      </p>
-                    )}
-                    {comp.weaknesses && (
-                      <p className="text-sm text-muted-foreground">
-                        <span className="text-red-500 font-medium">نقاط الضعف: </span>
-                        {comp.weaknesses}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Section 3: Analysis Insights - Market Overview, Opportunities, Recommendations */}
-        {analysis && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-12"
-          >
-            <div className="text-center mb-8">
-              <h3 className="text-2xl md:text-4xl font-bold mb-4">
-                رؤى <span className="gradient-text">استراتيجية</span> للتسويق الرقمي
-              </h3>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                توصيات مخصصة وفرص نمو مبنية على تحليل عميق للسوق والكلمات المفتاحية
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {analysis.marketOverview && (
-                <div className="bg-card rounded-2xl p-6 border border-border/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
-                      <BarChart3 className="w-6 h-6 text-primary-foreground" />
-                    </div>
-                    <h4 className="font-bold text-lg">نظرة عامة على السوق</h4>
-                  </div>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {analysis.marketOverview}
-                  </p>
-                </div>
-              )}
-
-              {analysis.opportunities && analysis.opportunities.length > 0 && (
-                <div className="bg-card rounded-2xl p-6 border border-border/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
-                      <Target className="w-6 h-6 text-green-500" />
-                    </div>
-                    <h4 className="font-bold text-lg">فرص النمو المتاحة</h4>
-                  </div>
-                  <ul className="space-y-2">
-                    {analysis.opportunities.slice(0, 3).map((opp, i) => (
-                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                        <span className="text-green-500 mt-1">•</span>
-                        {opp}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {analysis.recommendations && analysis.recommendations.length > 0 && (
-                <div className="bg-card rounded-2xl p-6 border border-border/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                      <Lightbulb className="w-6 h-6 text-blue-500" />
-                    </div>
-                    <h4 className="font-bold text-lg">توصيات الخبراء</h4>
-                  </div>
-                  <ul className="space-y-2">
-                    {analysis.recommendations.slice(0, 3).map((rec, i) => (
-                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                        <span className="text-blue-500 mt-1">•</span>
-                        {rec}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {analysis.seasonalTips && analysis.seasonalTips.length > 0 && (
-                <div className="bg-card rounded-2xl p-6 border border-border/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                      <Calendar className="w-6 h-6 text-amber-500" />
-                    </div>
-                    <h4 className="font-bold text-lg">استراتيجيات موسمية</h4>
-                  </div>
-                  <ul className="space-y-2">
-                    {analysis.seasonalTips.slice(0, 3).map((tip, i) => (
-                      <li key={i} className="text-muted-foreground text-sm flex items-start gap-2">
-                        <span className="text-amber-500 mt-1">•</span>
-                        {tip}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Download Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="flex items-center justify-center mt-8"
-        >
-          <Button
-            onClick={handleDownloadHTML}
-            className="h-14 px-10 text-lg font-bold gradient-bg rounded-xl shadow-glow hover:shadow-soft transition-all duration-300"
-          >
-            <Download className="w-5 h-5 ml-2" />
-            تنزيل التقرير
-          </Button>
-        </motion.div>
-      </div>
-    </section>
-  );
+  return;
 };
-
 export default ResultsSection;
