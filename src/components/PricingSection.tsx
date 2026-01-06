@@ -1,16 +1,19 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const plans = [
   {
+    id: "free",
     name: "مجاني",
     price: "0",
     period: "للأبد",
-    description: "مثالي للبدء واستكشاف الأداة",
+    description: "تجربة واحدة مجانية لكل مستخدم",
     features: [
-      "5 عمليات بحث شهرياً",
+      "تجربة واحدة مجانية",
       "تحليل أساسي للكلمات",
       "تقارير PDF بسيطة",
       "دعم عبر البريد",
@@ -19,8 +22,9 @@ const plans = [
     buttonText: "ابدأ مجاناً",
   },
   {
+    id: "professional",
     name: "احترافي",
-    price: "199",
+    price: "150",
     period: "شهرياً",
     description: "للمتاجر الصغيرة والمتوسطة",
     features: [
@@ -32,11 +36,12 @@ const plans = [
       "تصدير البيانات",
     ],
     popular: true,
-    buttonText: "ابدأ الآن",
+    buttonText: "اشترك الآن",
   },
   {
+    id: "enterprise",
     name: "مؤسسي",
-    price: "499",
+    price: "250",
     period: "شهرياً",
     description: "للشركات الكبيرة والوكالات",
     features: [
@@ -49,11 +54,24 @@ const plans = [
       "تكامل مع أدواتك",
     ],
     popular: false,
-    buttonText: "تواصل معنا",
+    buttonText: "اشترك الآن",
   },
 ];
 
 const PricingSection = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handlePlanClick = (planId: string) => {
+    if (planId === "free") {
+      if (!user) {
+        navigate("/auth");
+      }
+      return;
+    }
+    navigate("/subscribe");
+  };
+
   return (
     <section className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -113,6 +131,7 @@ const PricingSection = () => {
               </ul>
 
               <Button 
+                onClick={() => handlePlanClick(plan.id)}
                 className={`w-full h-14 text-lg font-bold rounded-xl transition-all duration-300 ${
                   plan.popular 
                     ? "gradient-bg shadow-glow hover:shadow-soft" 

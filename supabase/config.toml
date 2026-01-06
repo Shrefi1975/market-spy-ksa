@@ -2,3 +2,6 @@ project_id = "baabgiqxzepakprboknf"
 
 [functions.analyze-keywords]
 verify_jwt = false
+
+[functions.ip-check]
+verify_jwt = false

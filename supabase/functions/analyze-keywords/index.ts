@@ -131,9 +131,67 @@ serve(async (req) => {
       );
     }
 
-    const userId = claimsData.claims.sub;
+    const userId = claimsData.claims.sub as string;
     console.log('Authenticated user:', userId);
     // ===== END AUTHENTICATION CHECK =====
+
+    // ===== SUBSCRIPTION CHECK =====
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+    const { data: subscriptionData, error: subError } = await adminClient
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (subError || !subscriptionData) {
+      console.error('Subscription not found:', subError?.message);
+      return new Response(
+        JSON.stringify({ error: 'لم يتم العثور على اشتراك. يرجى التسجيل أولاً.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if subscription is active
+    if (!subscriptionData.is_active) {
+      return new Response(
+        JSON.stringify({ error: 'اشتراكك غير نشط. يرجى تجديد الاشتراك.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if subscription has expired (for paid plans)
+    if (subscriptionData.expires_at && new Date(subscriptionData.expires_at) < new Date()) {
+      return new Response(
+        JSON.stringify({ error: 'انتهت صلاحية اشتراكك. يرجى تجديد الاشتراك.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check search limit
+    if (subscriptionData.searches_used >= subscriptionData.searches_limit) {
+      // Check if this is a free plan with trial already used
+      if (subscriptionData.plan === 'free' && subscriptionData.free_trial_used) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'لقد استخدمت تجربتك المجانية. يرجى الترقية لخطة مدفوعة للاستمرار.',
+            upgrade_required: true 
+          }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      return new Response(
+        JSON.stringify({ 
+          error: 'لقد وصلت للحد الأقصى من عمليات البحث هذا الشهر. يرجى الترقية لخطة أعلى.',
+          upgrade_required: true
+        }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Subscription valid. Plan:', subscriptionData.plan, 'Searches:', subscriptionData.searches_used, '/', subscriptionData.searches_limit);
+    // ===== END SUBSCRIPTION CHECK =====
 
     const requestData = await req.json();
     const { url, description, location } = requestData;
@@ -421,12 +479,40 @@ ${websiteContent ? `📄 محتوى الموقع المستخرج:\n${websiteCon
 
     console.log('Analysis completed successfully with', result.keywords?.length || 0, 'keywords');
 
+    // ===== UPDATE USAGE COUNTER =====
+    const updateData: { searches_used: number; free_trial_used?: boolean } = {
+      searches_used: subscriptionData.searches_used + 1,
+    };
+
+    // Mark free trial as used for free plan
+    if (subscriptionData.plan === 'free' && !subscriptionData.free_trial_used) {
+      updateData.free_trial_used = true;
+    }
+
+    const { error: updateError } = await adminClient
+      .from('subscriptions')
+      .update(updateData)
+      .eq('user_id', userId);
+
+    if (updateError) {
+      console.error('Error updating usage counter:', updateError.message);
+      // Don't fail the request, just log the error
+    } else {
+      console.log('Usage counter updated. New count:', updateData.searches_used);
+    }
+    // ===== END UPDATE USAGE COUNTER =====
+
     return new Response(
       JSON.stringify({ 
         success: true, 
         data: result,
         scrapedUrl: url || null,
-        websiteTitle: websiteMetadata?.title || null
+        websiteTitle: websiteMetadata?.title || null,
+        usage: {
+          searches_used: updateData.searches_used,
+          searches_limit: subscriptionData.searches_limit,
+          plan: subscriptionData.plan
+        }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
