@@ -191,11 +191,23 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
         <ul>${lis}</ul>
       </section>`;
     };
-    // Helper to validate URLs
+    // Helper to normalize and validate URLs
+    const normalizeUrl = (url?: string): string => {
+      if (!url) return '';
+      // Remove leading slashes and clean up the URL
+      let cleanUrl = url.trim().replace(/^\/+/, '');
+      // If it doesn't start with http, add https://
+      if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+        cleanUrl = 'https://' + cleanUrl;
+      }
+      return cleanUrl;
+    };
+
     const isValidUrl = (url?: string): boolean => {
       if (!url) return false;
       try {
-        const parsed = new URL(url.startsWith('http') ? url : 'https://' + url);
+        const normalizedUrl = normalizeUrl(url);
+        const parsed = new URL(normalizedUrl);
         return parsed.hostname.includes('.') && parsed.hostname.length > 3;
       } catch {
         return false;
@@ -214,14 +226,18 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
                <h3>المنافسون الرئيسيون في السوق</h3>
              </div>
              <div class="competitors-grid">
-               ${analysis.competitors.slice(0, 6).map(comp => `
+               ${analysis.competitors.slice(0, 6).map(comp => {
+                 const validUrl = isValidUrl(comp.website);
+                 const normalizedUrl = normalizeUrl(comp.website);
+                 const displayUrl = comp.website?.replace(/^https?:\/\//, '').replace(/^\/+/, '') || '';
+                 return `
                  <div class="competitor-card">
                    <h4>${escapeHtml(comp.name)}</h4>
-                   ${isValidUrl(comp.website) ? `<a href="${comp.website?.startsWith('http') ? comp.website : 'https://' + comp.website}" target="_blank" rel="noopener noreferrer" class="comp-website">${escapeHtml(comp.website || '')}</a>` : ''}
+                   ${validUrl ? `<a href="${normalizedUrl}" target="_blank" rel="noopener noreferrer" class="comp-website">${escapeHtml(displayUrl)}</a>` : ''}
                    ${comp.strengths ? `<p class="strength"><span class="label">✓ نقاط القوة:</span> ${escapeHtml(comp.strengths)}</p>` : ''}
                    ${comp.weaknesses ? `<p class="weakness"><span class="label">✗ نقاط الضعف:</span> ${escapeHtml(comp.weaknesses)}</p>` : ''}
-                 </div>
-               `).join('\n')}
+                 </div>`;
+               }).join('\n')}
              </div>
            </div>
          </section>` : "";
