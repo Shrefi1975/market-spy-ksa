@@ -168,7 +168,7 @@ const Index = () => {
       <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
       <FeaturesSection />
       <HowItWorksSection />
-      <AnalyticsVisualSection />
+      <AnalyticsVisualSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <Footer />
     </div>
   );
