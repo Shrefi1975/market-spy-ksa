@@ -191,22 +191,33 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
         <ul>${lis}</ul>
       </section>`;
     };
+    // Helper to validate URLs
+    const isValidUrl = (url?: string): boolean => {
+      if (!url) return false;
+      try {
+        const parsed = new URL(url.startsWith('http') ? url : 'https://' + url);
+        return parsed.hostname.includes('.') && parsed.hostname.length > 3;
+      } catch {
+        return false;
+      }
+    };
+
     const competitorsSection = analysis?.competitors && analysis.competitors.length > 0 ? `<!-- Section: Competitors Analysis -->
          <section class="section-block">
            <div class="section-header">
-             <h2 class="section-title">تحليل المنافسين في السوق</h2>
-             <p class="section-desc">دراسة شاملة لأبرز المنافسين مع تحديد نقاط القوة والضعف</p>
+             <h2 class="section-title">🏆 تحليل المنافسين في السوق ${escapeHtml(countryName)}</h2>
+             <p class="section-desc">دراسة تفصيلية لأبرز المنافسين في مجالك مع تحليل نقاط القوة والضعف لديهم</p>
            </div>
            <div class="card competitors-section">
              <div class="card-header">
-               <div class="card-icon competitors-icon">🏆</div>
-               <h3>المنافسون الرئيسيون</h3>
+               <div class="card-icon competitors-icon">🎯</div>
+               <h3>المنافسون الرئيسيون في السوق</h3>
              </div>
              <div class="competitors-grid">
                ${analysis.competitors.slice(0, 6).map(comp => `
                  <div class="competitor-card">
                    <h4>${escapeHtml(comp.name)}</h4>
-                   ${comp.website ? `<a href="${comp.website.startsWith('http') ? comp.website : 'https://' + comp.website}" class="comp-website">${escapeHtml(comp.website)}</a>` : ''}
+                   ${isValidUrl(comp.website) ? `<a href="${comp.website?.startsWith('http') ? comp.website : 'https://' + comp.website}" target="_blank" rel="noopener noreferrer" class="comp-website">${escapeHtml(comp.website || '')}</a>` : ''}
                    ${comp.strengths ? `<p class="strength"><span class="label">✓ نقاط القوة:</span> ${escapeHtml(comp.strengths)}</p>` : ''}
                    ${comp.weaknesses ? `<p class="weakness"><span class="label">✗ نقاط الضعف:</span> ${escapeHtml(comp.weaknesses)}</p>` : ''}
                  </div>
@@ -215,10 +226,10 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
            </div>
          </section>` : "";
     const analysisInsightsSection = analysis?.marketOverview || analysis?.opportunities?.length || analysis?.recommendations?.length || analysis?.seasonalTips?.length ? `<!-- Section: Strategic Insights -->
-         <section class="section-block">
+         <section class="section-block personalized-insights">
            <div class="section-header">
-             <h2 class="section-title">رؤى استراتيجية للتسويق الرقمي</h2>
-             <p class="section-desc">توصيات مخصصة وفرص نمو مبنية على تحليل عميق للسوق</p>
+             <h2 class="section-title">💡 رؤى استراتيجية مخصصة لنشاطك التجاري</h2>
+             <p class="section-desc">توصيات حصرية وفرص نمو مبنية على تحليل عميق لسوق ${escapeHtml(countryName)} ونشاطك التجاري</p>
            </div>
            <div class="cards-grid">
              ${marketOverview}
@@ -732,6 +743,84 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
       line-height: 1.6;
     }
 
+    /* ===== Personalized Insights Highlight ===== */
+    .personalized-insights .section-title {
+      font-size: 28px;
+    }
+
+    .personalized-insights .section-desc {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ===== Report Info Box ===== */
+    .report-info-box {
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    .report-info-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .report-info-box p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .share-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .share-btn.whatsapp {
+      background: #25D366;
+      color: white;
+    }
+
+    .share-btn.email {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .report-highlight {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-weight: 600;
+      color: #92400e;
+    }
+
     /* ===== Footer ===== */
     footer {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -967,6 +1056,21 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
 
     <!-- Visual Analysis Section -->
     ${visualAnalysisSection}
+
+    <!-- Report Info Box -->
+    <div class="report-info-box">
+      <h3>📄 التقرير بصيغة HTML يمكنك فتحه في أي متصفح</h3>
+      <p class="report-highlight">✨ يحتوي هذا التقرير على ${uniqueResults.length} كلمة مفتاحية مع توصيات مخصصة لنشاطك</p>
+      <p>مشاركة التقرير:</p>
+      <div class="share-buttons">
+        <a href="https://wa.me/?text=${encodeURIComponent('تقرير تحليل الكلمات المفتاحية من KeyRank - اطلع على الكلمات المفتاحية الذهبية لتحسين ظهورك في محركات البحث!')}" target="_blank" class="share-btn whatsapp">
+          📱 واتساب
+        </a>
+        <a href="mailto:?subject=${encodeURIComponent('تقرير تحليل SEO من KeyRank')}&body=${encodeURIComponent('مرفق تقرير تحليل الكلمات المفتاحية من KeyRank. يحتوي على ' + uniqueResults.length + ' كلمة مفتاحية مع توصيات استراتيجية.')}" class="share-btn email">
+          ✉️ البريد الإلكتروني
+        </a>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer>

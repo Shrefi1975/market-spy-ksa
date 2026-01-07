@@ -7,7 +7,7 @@ import PreviewAnalysisSection from "@/components/PreviewAnalysisSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
-import FAQSection from "@/components/FAQSection";
+
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpgradeDialog from "@/components/UpgradeDialog";
@@ -168,7 +168,7 @@ const Index = () => {
       <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
       <FeaturesSection />
       <HowItWorksSection />
-      <FAQSection />
+      
       <Footer />
     </div>
   );

@@ -83,10 +83,24 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xl">K</span>
-            </div>
+          <Link to="/" className="flex items-center gap-3">
+            <svg className="w-12 h-12 flex-shrink-0" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="navLogoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" />
+                  <stop offset="100%" stopColor="hsl(var(--primary-dark, 340 85% 40%))" />
+                </linearGradient>
+              </defs>
+              <circle cx="28" cy="28" r="26" fill="url(#navLogoBg)"/>
+              <circle cx="28" cy="28" r="22" fill="white" fillOpacity="0.15"/>
+              <path d="M20 20C20 15.5817 23.5817 12 28 12C32.4183 12 36 15.5817 36 20C36 23.0324 34.3168 25.6772 31.8284 27.1716L33 42H23L24.1716 27.1716C21.6832 25.6772 20 23.0324 20 20Z" fill="white"/>
+              <circle cx="28" cy="20" r="4" fill="hsl(var(--primary))"/>
+              <rect x="38" y="32" width="6" height="12" rx="1" fill="white" fillOpacity="0.9"/>
+              <rect x="38" y="26" width="6" height="6" rx="1" fill="white" fillOpacity="0.6"/>
+              <rect x="12" y="36" width="6" height="8" rx="1" fill="white" fillOpacity="0.7"/>
+              <rect x="12" y="30" width="6" height="6" rx="1" fill="white" fillOpacity="0.4"/>
+              <path d="M40 24L44 20M44 20L44 23M44 20L41 20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
             <span className="text-2xl font-bold">
               <span className="text-secondary">Key</span>
               <span className="text-primary">Rank</span>
