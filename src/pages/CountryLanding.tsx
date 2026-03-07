@@ -99,7 +99,8 @@ const CountryLanding = () => {
     
     try {
       const { data: responseData, error } = await supabase.functions.invoke('analyze-keywords', {
-        body: { url: data.url, description: data.description, location: data.location, country: data.country },
+        body: { url: data.url, description: data.description, location: data.location, country: data.country, countryNameAr: country.nameAr, countryCurrency: country.currency, countryCurrencySymbol: country.currencySymbol },
+      });
       });
 
       if (error) throw new Error(error.message || 'حدث خطأ أثناء التحليل');

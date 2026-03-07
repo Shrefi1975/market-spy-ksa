@@ -69,6 +69,9 @@ const Index = () => {
           description: data.description,
           location: data.location,
           country: data.country,
+          countryNameAr: getCountryByCode(data.country)?.nameAr,
+          countryCurrency: getCountryByCode(data.country)?.currency,
+          countryCurrencySymbol: getCountryByCode(data.country)?.currencySymbol,
         },
       });
 
