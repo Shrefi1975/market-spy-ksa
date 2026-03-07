@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Search, TrendingUp, BarChart3, Target, LineChart, Sparkles, Shield, Zap, Award } from "lucide-react";
-import { arabCountries } from "@/data/arabCountries";
+import { countries } from "@/data/countries";
 const stats = [{
   icon: Shield,
   value: "100%",
