@@ -14,7 +14,7 @@ import UpgradeDialog from "@/components/UpgradeDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { getCountryByCode } from "@/data/arabCountries";
+import { getCountryByCode } from "@/data/countries";
 interface KeywordResult {
   keyword: string;
   seoTitle: string;
