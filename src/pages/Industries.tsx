@@ -47,7 +47,7 @@ const Industries: React.FC = () => {
                     <span className="text-4xl block mb-4">{industry.icon}</span>
                     <h2 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{industry.nameAr}</h2>
                     <p className="text-sm text-muted-foreground">{industry.nameEn}</p>
-                    <div className="mt-4 flex items-center justify-center gap-1 text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="mt-4 flex items-center justify-center gap-1 bg-foreground text-primary-foreground rounded-lg px-3 py-1.5 text-sm font-medium">
                       <span>استكشف الكلمات</span>
                       <ArrowLeft className="w-4 h-4" />
                     </div>
