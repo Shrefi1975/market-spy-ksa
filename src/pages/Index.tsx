@@ -10,7 +10,7 @@ import ResultsSection from "@/components/ResultsSection";
 import AnalyticsVisualSection from "@/components/AnalyticsVisualSection";
 import Footer from "@/components/Footer";
 import CompetitorIntelligenceSection from "@/components/CompetitorIntelligenceSection";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import IndustriesShowcase from "@/components/IndustriesShowcase";
 import UpgradeDialog from "@/components/UpgradeDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
