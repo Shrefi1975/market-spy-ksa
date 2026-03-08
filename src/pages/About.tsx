@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { motion } from "framer-motion";
 import { Target, Users, Award, Lightbulb, Search, TrendingUp, BarChart3, LineChart, Sparkles } from "lucide-react";
+import heroAbout from "@/assets/hero-about.jpg";
 
 const values = [
   {
@@ -44,7 +45,11 @@ const About = () => {
       <Navbar />
       <WhatsAppButton />
       
-      <section className="pt-32 pb-24">
+      <section className="relative pt-32 pb-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroAbout} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/80" />
+        </div>
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
