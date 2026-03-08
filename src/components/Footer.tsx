@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { arabCountries, getArabCountriesByRegion, regionLabels, regionOrder } from "@/data/arabCountries";
+import { industries } from "@/data/industries";
 
 const Footer = () => {
   return (
