@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.seo-tools]
 verify_jwt = false
+
+[functions.competitor-analysis]
+verify_jwt = false
