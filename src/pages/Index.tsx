@@ -171,6 +171,7 @@ const Index = () => {
       <AnalysisFormSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
+      <IndustriesShowcase />
       <CompetitorIntelligenceSection />
       <FeaturesSection />
       <HowItWorksSection />
