@@ -26,7 +26,7 @@ const CompetitorIntelligenceSection: React.FC = () => {
       toast({
         title: "يجب تسجيل الدخول",
         description: "يرجى تسجيل الدخول أولاً لاستخدام أداة تحليل المنافسين",
-        variant: "destructive"
+        variant: "destructive",
       });
       navigate("/auth");
       return;
@@ -41,8 +41,8 @@ const CompetitorIntelligenceSection: React.FC = () => {
           competitorDomain: data.competitorDomain,
           userDomain: data.userDomain || undefined,
           country: data.country,
-          analysisType: data.analysisType
-        }
+          analysisType: data.analysisType,
+        },
       });
 
       if (error) throw new Error(error.message || "حدث خطأ أثناء التحليل");
@@ -56,7 +56,7 @@ const CompetitorIntelligenceSection: React.FC = () => {
 
       toast({
         title: "تم التحليل بنجاح! ✨",
-        description: `تم تحليل ${responseData.meta.competitorDomain} واكتشاف ${responseData.data.keywords?.length || 0} كلمة مفتاحية`
+        description: `تم تحليل ${responseData.meta.competitorDomain} واكتشاف ${responseData.data.keywords?.length || 0} كلمة مفتاحية`,
       });
 
       setTimeout(() => {
@@ -67,7 +67,7 @@ const CompetitorIntelligenceSection: React.FC = () => {
       toast({
         title: "خطأ في التحليل",
         description: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -75,15 +75,15 @@ const CompetitorIntelligenceSection: React.FC = () => {
   };
 
   return (
-    <section className="bg-muted/30 py-[40px]" id="competitor-analysis">
-      <div className="container mx-auto px-0 py-[5px]">
+    <section className="py-16 bg-muted/30" id="competitor-analysis">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10">
-          
+          className="text-center mb-10"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary text-sm font-medium mb-4">
             <Shield className="w-4 h-4" />
             ذكاء تنافسي متقدم
@@ -97,18 +97,18 @@ const CompetitorIntelligenceSection: React.FC = () => {
         </motion.div>
 
         {/* Features badges */}
-        
-
-
-
-
-
-
-
-
-
-
-        
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
+          {[
+            { icon: Target, text: "تحليل فجوة الكلمات" },
+            { icon: Sparkles, text: "فرص ترتيب سهلة" },
+            { icon: Shield, text: "اقتراحات محتوى ذكية" },
+          ].map((f, i) => (
+            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border rounded-full text-sm text-muted-foreground">
+              <f.icon className="w-3.5 h-3.5 text-primary" />
+              {f.text}
+            </div>
+          ))}
+        </div>
 
         {/* Form */}
         <div className="max-w-3xl mx-auto">
@@ -120,8 +120,8 @@ const CompetitorIntelligenceSection: React.FC = () => {
           {results && meta && <CompetitorResults data={results} meta={meta} />}
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default CompetitorIntelligenceSection;
