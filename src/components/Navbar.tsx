@@ -21,6 +21,7 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/", label: "الرئيسية" },
+    { to: "/dashboard", label: "لوحة التحكم" },
     { to: "/about", label: "من نحن" },
     { to: "/services", label: "الخدمات" },
     { to: "/blog", label: "المدونة" },
