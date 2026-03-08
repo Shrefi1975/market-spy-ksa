@@ -11,6 +11,7 @@ import AnalyticsVisualSection from "@/components/AnalyticsVisualSection";
 import Footer from "@/components/Footer";
 import CompetitorIntelligenceSection from "@/components/CompetitorIntelligenceSection";
 import IndustriesShowcase from "@/components/IndustriesShowcase";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import UpgradeDialog from "@/components/UpgradeDialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
