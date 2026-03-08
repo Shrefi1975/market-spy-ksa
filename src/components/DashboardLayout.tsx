@@ -2,8 +2,8 @@ import React from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Search, FileText, Target, BarChart3, Lightbulb, Tags,
-  ShoppingCart, BookOpen, LayoutDashboard, Settings, LogOut,
-  Moon, Sun, Menu, ChevronRight, Crown, Compass
+  ShoppingCart, BookOpen, LayoutDashboard, LogOut,
+  Moon, Sun, Crown, Compass, ArrowRight
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 
 const tools = [
   { title: "لوحة التحكم", url: "/dashboard", icon: LayoutDashboard },
@@ -40,6 +41,7 @@ function AppSidebar() {
   };
 
   const planLabels: Record<string, string> = { free: 'مجاني', professional: 'احترافي', enterprise: 'مؤسسي' };
+  const usagePercent = subscription ? (subscription.searches_used / subscription.searches_limit) * 100 : 0;
 
   return (
     <Sidebar collapsible="icon" side="right" className="border-l border-border">
@@ -47,7 +49,7 @@ function AppSidebar() {
         {/* Logo */}
         <div className="p-4 flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-primary-foreground" />
             </div>
             {!collapsed && (
@@ -86,16 +88,17 @@ function AppSidebar() {
         {/* Bottom section */}
         <div className="mt-auto p-4 space-y-3">
           {!collapsed && subscription && (
-            <div className="rounded-xl bg-primary/5 border border-primary/10 p-3 text-center">
-              <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
-                <Crown className="w-3 h-3" />
+            <div className="rounded-2xl bg-primary/5 border border-primary/10 p-4">
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground mb-2">
+                <Crown className="w-3.5 h-3.5 text-primary" />
                 <span>{planLabels[subscription.plan] || 'مجاني'}</span>
               </div>
-              <div className="text-sm font-medium">
-                {subscription.searches_used} / {subscription.searches_limit} عملية بحث
+              <div className="text-sm font-bold text-center mb-2">
+                {subscription.searches_used} / {subscription.searches_limit} بحث
               </div>
+              <Progress value={usagePercent} className="h-1.5 mb-3" />
               {subscription.plan === 'free' && (
-                <Button size="sm" className="mt-2 w-full gradient-bg text-xs" onClick={() => navigate('/subscribe')}>
+                <Button size="sm" className="w-full gradient-bg text-xs font-bold rounded-xl" onClick={() => navigate('/subscribe')}>
                   ترقية الخطة
                 </Button>
               )}
@@ -103,13 +106,13 @@ function AppSidebar() {
           )}
 
           <div className="flex items-center gap-2">
-            <button onClick={toggleDark} className="w-8 h-8 rounded-lg flex items-center justify-center bg-muted hover:bg-muted/80 transition-colors">
+            <button onClick={toggleDark} className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted hover:bg-muted/80 transition-colors">
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
             {!collapsed && (
               <button
                 onClick={async () => { await signOut(); navigate('/'); }}
-                className="flex-1 flex items-center gap-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg px-3 py-2 transition-colors"
+                className="flex-1 flex items-center gap-2 text-sm text-destructive hover:bg-destructive/10 rounded-xl px-3 py-2 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 تسجيل الخروج
@@ -128,11 +131,16 @@ const DashboardLayout: React.FC = () => {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center border-b border-border px-4 bg-background/95 backdrop-blur-sm sticky top-0 z-30">
+          <header className="h-14 flex items-center border-b border-border px-4 bg-background/95 backdrop-blur-md sticky top-0 z-30">
             <SidebarTrigger />
-            <div className="mr-auto" />
+            <div className="mr-auto flex items-center gap-2">
+              <Link to="/" className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                <ArrowRight className="w-3 h-3" />
+                العودة للرئيسية
+              </Link>
+            </div>
           </header>
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
+          <main className="flex-1 p-4 md:p-8 overflow-auto bg-muted/20">
             <Outlet />
           </main>
         </div>
