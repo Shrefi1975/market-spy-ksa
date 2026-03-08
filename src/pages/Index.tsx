@@ -124,11 +124,11 @@ const Index = () => {
       <UpgradeDialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog} />
       <HeroSection />
       <AnalysisFormSection onAnalyze={handleAnalyze} isLoading={isLoading} />
+      <CompetitorIntelligenceSection />
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
       <FeaturesSection />
       <IndustriesShowcase />
-      <CompetitorIntelligenceSection />
       <HowItWorksSection />
       <TestimonialsSection />
       <AnalyticsVisualSection />
