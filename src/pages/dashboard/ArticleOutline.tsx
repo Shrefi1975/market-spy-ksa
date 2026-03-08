@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { FileText, Loader2, Sparkles, Copy, Check } from "lucide-react";
+import { FileText, Loader2, Sparkles, Copy, Check, Clock, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ToolTipHint, BenefitBanner, UsageHints } from "@/components/ui/tool-tip-hint";
 
 const ArticleOutline: React.FC = () => {
   const [keyword, setKeyword] = useState("");
@@ -51,11 +52,27 @@ const ArticleOutline: React.FC = () => {
         <p className="text-muted-foreground text-sm mt-1">أنشئ هيكل مقال احترافي محسّن لمحركات البحث</p>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <BenefitBanner
+          icon={<Clock className="w-5 h-5 text-primary" />}
+          title="وفّر ساعات من التخطيط"
+          description="هيكل مقال جاهز مع عناوين H2/H3 ووصف ميتا في ثوانٍ"
+        />
+        <BenefitBanner
+          icon={<TrendingUp className="w-5 h-5 text-primary" />}
+          title="محتوى يتصدر النتائج"
+          description="هياكل مبنية على تحليل المحتوى المتصدر في نتائج البحث"
+        />
+      </div>
+
       <Card>
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">الكلمة المفتاحية الرئيسية</label>
+              <label className="block text-sm font-medium mb-2 flex items-center">
+                الكلمة المفتاحية الرئيسية
+                <ToolTipHint text="أدخل الكلمة المفتاحية التي تريد كتابة مقال حولها. سيتم توليد هيكل شامل مع عناوين فرعية." icon="tip" />
+              </label>
               <Input placeholder="مثال: التسويق بالمحتوى..." value={keyword} onChange={e => setKeyword(e.target.value)} className="h-11" />
             </div>
             <div>
@@ -69,6 +86,13 @@ const ArticleOutline: React.FC = () => {
               </Select>
             </div>
           </div>
+
+          <UsageHints hints={[
+            "استخدم الهيكل كأساس وخصّصه بأسلوبك",
+            "أضف أمثلة وبيانات محلية لكل قسم",
+            "انسخ الهيكل إلى محرر النصوص وابدأ الكتابة",
+          ]} />
+
           <Button onClick={handleGenerate} disabled={loading} className="gradient-bg h-11 px-8">
             {loading ? <><Loader2 className="w-4 h-4 ml-2 animate-spin" />جاري التوليد...</> : <><Sparkles className="w-4 h-4 ml-2" />توليد الهيكل</>}
           </Button>
@@ -108,7 +132,7 @@ const ArticleOutline: React.FC = () => {
             </div>
             {result.relatedTopics && (
               <div className="p-4 rounded-lg bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-2">مواضيع ذات صلة</p>
+                <p className="text-xs text-muted-foreground mb-2">مواضيع ذات صلة — يمكنك الربط الداخلي بها</p>
                 <div className="flex flex-wrap gap-2">
                   {result.relatedTopics.map((t: string, i: number) => (
                     <span key={i} className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">{t}</span>
