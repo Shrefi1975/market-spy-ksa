@@ -72,7 +72,7 @@ const allFeatures = [
   {
     icon: TrendingUp,
     title: "توقعات ذكية",
-    description: "تنبؤات مدعومة بالذكاء الاصطناعي لاتجاهات السوق المستقبلية",
+    description: "تنبؤات متقدمة لاتجاهات السوق المستقبلية",
   },
   {
     icon: Lock,
