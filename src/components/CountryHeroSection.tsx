@@ -23,7 +23,6 @@ const CountryHeroSection: React.FC<CountryHeroSectionProps> = ({ country }) => {
             <Globe className="w-5 h-5 text-primary" />
             <span className="font-bold text-lg">{country.nameAr}</span>
           </div>
-          </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             {words.slice(0, -2).join(" ")}{" "}
