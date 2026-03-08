@@ -48,6 +48,10 @@ const IndustriesShowcase: React.FC = () => {
                   {industry.nameAr}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">{industry.nameEn}</p>
+                <div className="mt-3 inline-flex items-center gap-1 bg-foreground text-primary-foreground rounded-lg px-3 py-1.5 text-xs font-medium">
+                  <span>استكشف الكلمات</span>
+                  <ArrowLeft className="w-3 h-3" />
+                </div>
               </Link>
             </motion.div>
           ))}
