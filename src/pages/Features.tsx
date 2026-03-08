@@ -87,21 +87,30 @@ const Features = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <section className="pt-32 pb-24">
-        <div className="container mx-auto px-4">
+      <section className="relative pt-32 pb-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroFeatures} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/80" />
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground">
               مميزات <span className="gradient-text">KeySaudi</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-primary-foreground/70 max-w-3xl mx-auto">
               اكتشف جميع الأدوات والمميزات التي ستساعدك على السيطرة على السوق السعودي
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="py-24">
+        <div className="container mx-auto px-4">
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {allFeatures.map((feature, index) => (
