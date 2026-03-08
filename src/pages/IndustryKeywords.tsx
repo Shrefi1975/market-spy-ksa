@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getIndustryBySlug, industries } from "@/data/industries";
 import { arabCountries } from "@/data/arabCountries";
+import heroIndustries from "@/assets/hero-industries.jpg";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -53,10 +54,10 @@ const IndustryKeywords: React.FC = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]" />
-          <div className="absolute bottom-10 left-10 w-60 h-60 bg-primary rounded-full blur-[100px]" />
+      <section className="relative pt-32 pb-20 text-primary-foreground overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroIndustries} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/75" />
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <Link to="/industries" className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-8 transition-colors">
