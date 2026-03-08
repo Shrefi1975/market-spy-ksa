@@ -50,21 +50,23 @@ const About = () => {
           <img src={heroAbout} alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-foreground/80" />
         </div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary-foreground">
               من <span className="gradient-text">نحن</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-primary-foreground/70 max-w-3xl mx-auto leading-relaxed">
               نحن فريق عربي متخصص في تحليل الأسواق الرقمية وتحسين محركات البحث، 
               نسعى لمساعدة أصحاب الأعمال في جميع الدول العربية على تحقيق النجاح الرقمي
             </p>
           </motion.div>
+        </div>
+      </section>
 
           {/* Story Section with Animated Hero */}
           <motion.div

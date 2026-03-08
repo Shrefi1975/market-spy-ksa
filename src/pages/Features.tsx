@@ -1,4 +1,5 @@
 import React from "react";
+import heroFeatures from "@/assets/hero-features.jpg";
 import Navbar from "@/components/Navbar";
 import FeaturesSection from "@/components/FeaturesSection";
 import Footer from "@/components/Footer";
