@@ -54,8 +54,8 @@ const App = () => (
             
             {/* Industry Keyword Pages */}
             <Route path="/industries" element={<Industries />} />
-            <Route path="/arabic-keywords-for-:slug" element={<IndustryKeywords />} />
-            <Route path="/arabic-keywords-for-:slug/:country" element={<IndustryCountryKeywords />} />
+            <Route path="/industries/:slug" element={<IndustryKeywords />} />
+            <Route path="/industries/:slug/:country" element={<IndustryCountryKeywords />} />
             
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>

@@ -36,7 +36,7 @@ const Industries: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {industries.map((industry) =>
-            <Link key={industry.slug} to={`/arabic-keywords-for-${industry.slug}`}>
+            <Link key={industry.slug} to={`/industries/${industry.slug}`}>
                 <Card className="h-full hover:border-primary hover:shadow-lg transition-all group cursor-pointer">
                   <CardContent className="p-6 text-center">
                     <span className="text-4xl block mb-4">{industry.icon}</span>

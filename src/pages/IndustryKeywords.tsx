@@ -214,7 +214,7 @@ const IndustryKeywords: React.FC = () => {
                 {arabCountries.map(country => (
                   <Link
                     key={country.code}
-                    to={`/arabic-keywords-for-${industry.slug}/${country.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
+                    to={`/industries/${industry.slug}/${country.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
                     <span className="text-lg">{country.flag}</span>
@@ -255,7 +255,7 @@ const IndustryKeywords: React.FC = () => {
                 {industries.filter(ind => ind.slug !== industry.slug).slice(0, 8).map(ind => (
                   <Link
                     key={ind.slug}
-                    to={`/arabic-keywords-for-${ind.slug}`}
+                    to={`/industries/${ind.slug}`}
                     className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
                     <span>{ind.icon}</span>

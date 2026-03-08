@@ -66,7 +66,7 @@ const IndustryCountryKeywords: React.FC = () => {
           <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]" />
         </div>
         <div className="container mx-auto px-4 relative z-10">
-          <Link to={`/arabic-keywords-for-${industry.slug}`} className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-6 transition-colors">
+          <Link to={`/industries/${industry.slug}`} className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             العودة لـ{industry.nameAr}
           </Link>
@@ -237,7 +237,7 @@ const IndustryCountryKeywords: React.FC = () => {
                 {otherCountries.map(c => (
                   <Link
                     key={c.code}
-                    to={`/arabic-keywords-for-${industry.slug}/${c.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
+                    to={`/industries/${industry.slug}/${c.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
                     <span className="text-lg">{c.flag}</span>
