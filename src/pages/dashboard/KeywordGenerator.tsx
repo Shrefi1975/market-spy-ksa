@@ -87,7 +87,7 @@ const KeywordGenerator: React.FC = () => {
       <div>
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Search className="w-6 h-6 text-primary" />
-          مولد الكلمات المفتاحية بالذكاء الاصطناعي
+          مولد الكلمات المفتاحية المتقدم
         </h1>
         <p className="text-muted-foreground text-sm mt-1">أدخل موضوعك واحصل على كلمات مفتاحية ذهبية مع تحليل شامل للأسواق العربية</p>
       </div>

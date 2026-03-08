@@ -10,7 +10,7 @@ const tools = [
   {
     icon: Search,
     title: "مولد الكلمات المفتاحية",
-    description: "اكتشف كلمات مفتاحية ذهبية بالذكاء الاصطناعي مع تحليل حجم البحث والمنافسة للأسواق العربية",
+    description: "اكتشف كلمات مفتاحية ذهبية مع تحليل حجم البحث والمنافسة للأسواق العربية",
     url: "/dashboard/keyword-generator",
     color: "from-primary to-primary/70",
   },
@@ -77,7 +77,7 @@ const FeaturesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            8 أدوات <span className="gradient-text">ذكاء اصطناعي</span> للأسواق العربية
+            8 أدوات <span className="gradient-text">SEO متقدمة</span> للأسواق العربية
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             أدوات SEO متقدمة صُممت خصيصاً لفهم سلوك البحث العربي مع دعم اللهجات المحلية والمرادفات

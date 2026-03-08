@@ -48,11 +48,11 @@ const HeroSection: React.FC = () => {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               المنصة العربية الأولى
               <br />
-              <span className="gradient-text">لذكاء SEO الاصطناعي</span>
+              <span className="gradient-text">لتحليل SEO المتقدم</span>
             </h1>
             
             <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed">
-              8 أدوات ذكاء اصطناعي متخصصة في تحليل الأسواق العربية: كلمات مفتاحية، هياكل مقالات، 
+              8 أدوات متخصصة في تحليل الأسواق العربية: كلمات مفتاحية، هياكل مقالات، 
               وسوم ميتا، استراتيجيات SEO — مصممة لـ 23 دولة عربية
             </p>
 
@@ -138,32 +138,6 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Arab Countries Marquee */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-        className="relative z-10 mt-4 overflow-hidden pb-8"
-      >
-        <p className="text-center text-white/50 text-sm mb-4">نغطي جميع الأسواق العربية</p>
-        <div className="flex justify-center flex-wrap gap-3 px-4 max-w-4xl mx-auto">
-          {arabCountries.slice(0, 12).map((c, i) => (
-            <motion.span
-              key={c.code}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.9 + i * 0.05 }}
-              className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm text-white/80 text-xs px-3 py-1.5 rounded-full border border-white/10"
-            >
-              <span>{c.flag}</span>
-              <span>{c.nameAr}</span>
-            </motion.span>
-          ))}
-          <span className="flex items-center text-white/50 text-xs px-3 py-1.5">
-            +{arabCountries.length - 12} دولة أخرى
-          </span>
-        </div>
-      </motion.div>
     </section>
   );
 };
