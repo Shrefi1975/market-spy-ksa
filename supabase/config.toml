@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.ip-check]
 verify_jwt = false
+
+[functions.seo-tools]
+verify_jwt = false
