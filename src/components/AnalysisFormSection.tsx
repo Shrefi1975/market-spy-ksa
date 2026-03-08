@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { Search, FileText, Loader2, Sparkles, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { countries, getCountryByCode, getCountriesByContinent, continentLabels } from "@/data/countries";
+import { getCountryByCode } from "@/data/arabCountries";
+import ArabCountrySelector from "@/components/ArabCountrySelector";
 
 interface AnalysisFormSectionProps {
   onAnalyze: (data: {
@@ -27,7 +27,6 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({
   const [description, setDescription] = useState("");
   const [country, setCountry] = useState(defaultCountry);
   const selectedCountry = getCountryByCode(country);
-  const countriesByContinent = getCountriesByContinent();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +49,6 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({
     return <>🚀 ابدأ بتحليل <span className="gradient-text">السوق {countryName}</span></>;
   };
 
-  const continentOrder = ["asia", "africa", "europe", "north-america", "south-america", "oceania"];
-
   return (
     <section id="analysis-form" className="py-16 relative overflow-hidden bg-gradient-to-b from-primary/5 to-background">
       <div className="absolute top-10 left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
@@ -65,41 +62,14 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({
               ابدأ الآن مجاناً
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3">{getFormTitle()}</h2>
-            <p className="text-muted-foreground">أدخل بيانات متجرك واحصل على تحليل شامل للكلمات المفتاحية الذهبية</p>
+            <p className="text-muted-foreground">أدخل بيانات متجرك واحصل على تحليل شامل للكلمات المفتاحية في الأسواق العربية</p>
           </div>
 
           <motion.form initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} onSubmit={handleSubmit} className="bg-card/90 backdrop-blur-xl rounded-3xl p-8 border border-border/50 shadow-xl">
             <div className="grid gap-5">
-              {/* Country Selector */}
               <div className="relative">
-                <label className="block text-sm font-medium mb-2 text-foreground">الدولة المستهدفة</label>
-                <div className="relative">
-                  <Globe className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5 z-10" />
-                  <Select value={country} onValueChange={setCountry}>
-                    <SelectTrigger className="pr-12 h-12 text-base bg-background/80 border-border/50 rounded-xl">
-                      <SelectValue placeholder="اختر الدولة المستهدفة" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-80">
-                      {continentOrder.map(continent => {
-                        const group = countriesByContinent[continent];
-                        if (!group) return null;
-                        return (
-                          <SelectGroup key={continent}>
-                            <SelectLabel className="font-bold text-primary">{continentLabels[continent]}</SelectLabel>
-                            {group.map(c => (
-                              <SelectItem key={c.code} value={c.code}>
-                                <span className="flex items-center gap-2">
-                                  <span>{c.flag}</span>
-                                  <span>{c.nameAr}</span>
-                                </span>
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <label className="block text-sm font-medium mb-2 text-foreground">الدولة العربية المستهدفة</label>
+                <ArabCountrySelector value={country} onValueChange={setCountry} className="h-12 text-base bg-background/80 border-border/50 rounded-xl" />
               </div>
 
               <div className="relative">
@@ -128,7 +98,7 @@ const AnalysisFormSection: React.FC<AnalysisFormSectionProps> = ({
             </div>
 
             <p className="text-center text-sm mt-4 text-popover-foreground">
-              ✨ مجاناً للأبد - لجميع دول العالم
+              ✨ مجاناً - متخصصة في الأسواق العربية
             </p>
           </motion.form>
         </motion.div>
