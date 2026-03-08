@@ -9,6 +9,7 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import ResultsSection from "@/components/ResultsSection";
 import AnalyticsVisualSection from "@/components/AnalyticsVisualSection";
 import Footer from "@/components/Footer";
+import CompetitorIntelligenceSection from "@/components/CompetitorIntelligenceSection";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpgradeDialog from "@/components/UpgradeDialog";
 import { useToast } from "@/hooks/use-toast";
@@ -169,6 +170,7 @@ const Index = () => {
       <AnalysisFormSection onAnalyze={handleAnalyze} isLoading={isLoading} />
       <PreviewAnalysisSection results={mappedPreviewResults} isAnalyzed={results.length > 0} />
       <ResultsSection results={results} analysis={analysis} isAnalysisComplete={results.length > 0 && !isLoading} countryName={countryName} />
+      <CompetitorIntelligenceSection />
       <FeaturesSection />
       <HowItWorksSection />
       <AnalyticsVisualSection />
