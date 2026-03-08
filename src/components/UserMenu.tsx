@@ -17,21 +17,16 @@ const UserMenu = () => {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          className="text-primary-foreground/80 hover:text-primary-foreground"
-          onClick={() => navigate('/auth')}
-        >
-          تسجيل الدخول
-        </Button>
-        <Button
-          className="gradient-bg shadow-glow hover:shadow-soft"
-          onClick={() => navigate('/auth')}
-        >
-          ابدأ مجاناً
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        className="flex items-center gap-2 text-foreground"
+        onClick={() => navigate('/auth')}
+      >
+        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+          <User className="w-4 h-4 text-foreground" />
+        </div>
+        <span className="hidden md:inline">تسجيل الدخول</span>
+      </Button>
     );
   }
 
@@ -46,7 +41,7 @@ const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground"
+          className="flex items-center gap-2 text-foreground"
         >
           <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center">
             <User className="w-4 h-4 text-primary-foreground" />
