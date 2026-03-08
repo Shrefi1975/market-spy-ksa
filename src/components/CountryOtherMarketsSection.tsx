@@ -22,7 +22,6 @@ const CountryOtherMarketsSection: React.FC<CountryOtherMarketsSectionProps> = ({
         <div className="flex flex-wrap justify-center gap-3">
           {otherCountries.map((c, i) => (
             <motion.a key={c.code} href={`/country/${c.code}`} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.03 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all">
-              <span>{c.flag}</span>
               <span className="text-sm font-medium">{c.nameAr}</span>
             </motion.a>
           ))}

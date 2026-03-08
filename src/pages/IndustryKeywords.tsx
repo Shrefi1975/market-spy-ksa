@@ -271,7 +271,6 @@ const IndustryKeywords: React.FC = () => {
                     to={`/industries/${industry.slug}/${country.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-primary/20 bg-primary/5 hover:border-primary hover:bg-primary/10 transition-all text-center"
                   >
-                    <span className="text-3xl">{country.flag}</span>
                     <span className="font-semibold text-sm">{country.nameAr}</span>
                     <Badge variant="outline" className="text-[10px]">مميز</Badge>
                   </Link>
@@ -285,7 +284,6 @@ const IndustryKeywords: React.FC = () => {
                     to={`/industries/${industry.slug}/${country.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
-                    <span className="text-lg">{country.flag}</span>
                     <span>{country.nameAr}</span>
                   </Link>
                 ))}

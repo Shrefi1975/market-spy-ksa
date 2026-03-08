@@ -20,9 +20,9 @@ const CountryHeroSection: React.FC<CountryHeroSectionProps> = ({ country }) => {
       <div className="container mx-auto px-4 relative z-10 text-center py-20">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-border/50 mb-8">
-            <span className="text-4xl">{country.flag}</span>
             <Globe className="w-5 h-5 text-primary" />
             <span className="font-bold text-lg">{country.nameAr}</span>
+          </div>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">

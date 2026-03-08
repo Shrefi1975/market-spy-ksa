@@ -71,7 +71,6 @@ const IndustryCountryKeywords: React.FC = () => {
             العودة لـ{industry.nameAr}
           </Link>
           <div className="flex items-center gap-5 mb-6">
-            <span className="text-5xl">{country.flag}</span>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-2">
                 كلمات مفتاحية لـ{industry.nameAr} في {country.nameAr}
@@ -242,7 +241,6 @@ const IndustryCountryKeywords: React.FC = () => {
                     to={`/industries/${industry.slug}/${c.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
-                    <span className="text-lg">{c.flag}</span>
                     <span>{c.nameAr}</span>
                   </Link>
                 ))}

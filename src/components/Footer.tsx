@@ -114,7 +114,6 @@ const Footer = () => {
                           to={`/country/${c.code}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary-foreground/5 hover:bg-primary/20 text-primary-foreground/50 hover:text-primary-foreground text-xs transition-all"
                         >
-                          <span>{c.flag}</span>
                           <span>{c.nameAr}</span>
                         </Link>
                       ))}
