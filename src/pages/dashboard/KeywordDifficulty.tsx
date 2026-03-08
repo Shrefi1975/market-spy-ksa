@@ -3,26 +3,23 @@ import { BarChart3, Loader2, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { countries, getCountriesByContinent, continentLabels } from "@/data/countries";
+import { getCountryByCode } from "@/data/arabCountries";
+import ArabCountrySelector from "@/components/ArabCountrySelector";
 
 const KeywordDifficulty: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const [country, setCountry] = useState("sa");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const countriesByContinent = getCountriesByContinent();
-  const continentOrder = ["asia", "africa", "europe", "north-america", "south-america", "oceania"];
-  const selectedCountry = countries.find(c => c.code === country);
 
   const handleAnalyze = async () => {
     if (!keyword.trim()) { toast({ title: "أدخل الكلمة المفتاحية", variant: "destructive" }); return; }
     setLoading(true); setResult(null);
     try {
+      const selectedCountry = getCountryByCode(country);
       const { data, error } = await supabase.functions.invoke('seo-tools', {
         body: { tool: 'keyword-difficulty', keyword, country, countryNameAr: selectedCountry?.nameAr },
       });
@@ -53,7 +50,7 @@ const KeywordDifficulty: React.FC = () => {
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <BarChart3 className="w-6 h-6 text-blue-500" /> تقدير صعوبة الكلمة المفتاحية
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">احصل على تقييم دقيق لصعوبة التصدر في نتائج البحث</p>
+        <p className="text-muted-foreground text-sm mt-1">احصل على تقييم دقيق لصعوبة التصدر في الأسواق العربية</p>
       </div>
 
       <Card>
@@ -64,19 +61,8 @@ const KeywordDifficulty: React.FC = () => {
               <Input placeholder="مثال: شراء لابتوب..." value={keyword} onChange={e => setKeyword(e.target.value)} className="h-11" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">الدولة</label>
-              <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {continentOrder.map(cont => {
-                    const group = countriesByContinent[cont];
-                    if (!group) return null;
-                    return (<SelectGroup key={cont}><SelectLabel className="font-bold text-primary">{continentLabels[cont]}</SelectLabel>
-                      {group.map(c => (<SelectItem key={c.code} value={c.code}><span className="flex items-center gap-2"><span>{c.flag}</span><span>{c.nameAr}</span></span></SelectItem>))}
-                    </SelectGroup>);
-                  })}
-                </SelectContent>
-              </Select>
+              <label className="block text-sm font-medium mb-2">الدولة العربية</label>
+              <ArabCountrySelector value={country} onValueChange={setCountry} />
             </div>
           </div>
           <Button onClick={handleAnalyze} disabled={loading} className="gradient-bg h-11 px-8">

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Search, Loader2, Download, Globe, Sparkles } from "lucide-react";
+import { Search, Loader2, Download, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { countries, getCountriesByContinent, continentLabels } from "@/data/countries";
+import { arabCountries, getCountryByCode } from "@/data/arabCountries";
+import ArabCountrySelector from "@/components/ArabCountrySelector";
 
 const KeywordGenerator: React.FC = () => {
   const [topic, setTopic] = useState("");
@@ -17,10 +17,8 @@ const KeywordGenerator: React.FC = () => {
   const [intent, setIntent] = useState("all");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
-  const countriesByContinent = getCountriesByContinent();
-  const continentOrder = ["asia", "africa", "europe", "north-america", "south-america", "oceania"];
 
-  const selectedCountry = countries.find(c => c.code === country);
+  const selectedCountry = getCountryByCode(country);
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
@@ -91,7 +89,7 @@ const KeywordGenerator: React.FC = () => {
           <Search className="w-6 h-6 text-primary" />
           مولد الكلمات المفتاحية بالذكاء الاصطناعي
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">أدخل موضوعك واحصل على كلمات مفتاحية ذهبية مع تحليل شامل</p>
+        <p className="text-muted-foreground text-sm mt-1">أدخل موضوعك واحصل على كلمات مفتاحية ذهبية مع تحليل شامل للأسواق العربية</p>
       </div>
 
       <Card>
@@ -102,28 +100,8 @@ const KeywordGenerator: React.FC = () => {
               <Input placeholder="مثال: مرتبة طبية، تسويق رقمي..." value={topic} onChange={e => setTopic(e.target.value)} className="h-11" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">الدولة المستهدفة</label>
-              <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger className="h-11">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {continentOrder.map(cont => {
-                    const group = countriesByContinent[cont];
-                    if (!group) return null;
-                    return (
-                      <SelectGroup key={cont}>
-                        <SelectLabel className="font-bold text-primary">{continentLabels[cont]}</SelectLabel>
-                        {group.map(c => (
-                          <SelectItem key={c.code} value={c.code}>
-                            <span className="flex items-center gap-2"><span>{c.flag}</span><span>{c.nameAr}</span></span>
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+              <label className="block text-sm font-medium mb-2">الدولة العربية المستهدفة</label>
+              <ArabCountrySelector value={country} onValueChange={setCountry} />
             </div>
           </div>
           <div>

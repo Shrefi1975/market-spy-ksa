@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { ShoppingCart, Loader2, Sparkles, Download } from "lucide-react";
+import { ShoppingCart, Loader2, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { countries, getCountriesByContinent, continentLabels } from "@/data/countries";
+import { getCountryByCode } from "@/data/arabCountries";
+import ArabCountrySelector from "@/components/ArabCountrySelector";
 
 const EcommerceKeywords: React.FC = () => {
   const [product, setProduct] = useState("");
@@ -17,9 +18,7 @@ const EcommerceKeywords: React.FC = () => {
   const [country, setCountry] = useState("sa");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const countriesByContinent = getCountriesByContinent();
-  const continentOrder = ["asia", "africa", "europe", "north-america", "south-america", "oceania"];
-  const selectedCountry = countries.find(c => c.code === country);
+  const selectedCountry = getCountryByCode(country);
 
   const handleGenerate = async () => {
     if (!product.trim()) { toast({ title: "أدخل اسم المنتج", variant: "destructive" }); return; }
@@ -41,7 +40,7 @@ const EcommerceKeywords: React.FC = () => {
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <ShoppingCart className="w-6 h-6 text-rose-500" /> كلمات التجارة الإلكترونية
         </h1>
-        <p className="text-muted-foreground text-sm mt-1">كلمات مفتاحية متخصصة لصفحات المنتجات والفئات</p>
+        <p className="text-muted-foreground text-sm mt-1">كلمات مفتاحية متخصصة لمتاجر الأسواق العربية</p>
       </div>
 
       <Card>
@@ -65,19 +64,8 @@ const EcommerceKeywords: React.FC = () => {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">الدولة</label>
-              <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger className="h-11"><SelectValue /></SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {continentOrder.map(cont => {
-                    const group = countriesByContinent[cont];
-                    if (!group) return null;
-                    return (<SelectGroup key={cont}><SelectLabel className="font-bold text-primary">{continentLabels[cont]}</SelectLabel>
-                      {group.map(c => (<SelectItem key={c.code} value={c.code}><span className="flex items-center gap-2"><span>{c.flag}</span><span>{c.nameAr}</span></span></SelectItem>))}
-                    </SelectGroup>);
-                  })}
-                </SelectContent>
-              </Select>
+              <label className="block text-sm font-medium mb-2">الدولة العربية</label>
+              <ArabCountrySelector value={country} onValueChange={setCountry} />
             </div>
           </div>
           <Button onClick={handleGenerate} disabled={loading} className="gradient-bg h-11 px-8">
