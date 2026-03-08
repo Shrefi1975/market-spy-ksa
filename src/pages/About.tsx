@@ -75,7 +75,7 @@ const About = () => {
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                 انطلقت KeyRank عام 2024 برؤية واضحة: تمكين أصحاب الأعمال العرب 
-                من فهم سلوك المستهلك المحلي واستهداف الكلمات المفتاحية الأكثر ربحية في 18 دولة عربية.
+                من فهم سلوك المستهلك المحلي واستهداف الكلمات المفتاحية الأكثر ربحية في 23 دولة عربية.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                 لاحظنا أن معظم أدوات SEO العالمية لا تفهم خصوصية الأسواق العربية - 
@@ -219,7 +219,7 @@ const About = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 p-12 rounded-3xl gradient-bg"
           >
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">18</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary-foreground mb-2">23</div>
               <div className="text-primary-foreground/80">دولة عربية</div>
             </div>
             <div className="text-center">

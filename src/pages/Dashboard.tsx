@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 
 const tools = [
-  { title: "مولد الكلمات المفتاحية", desc: "اكتشف كلمات مفتاحية ذهبية بالذكاء الاصطناعي", icon: Search, url: "/dashboard/keyword-generator", color: "from-primary to-primary/70" },
+  { title: "مولد الكلمات المفتاحية", desc: "اكتشف كلمات مفتاحية ذهبية للأسواق العربية", icon: Search, url: "/dashboard/keyword-generator", color: "from-primary to-primary/70" },
   { title: "تقدير صعوبة الكلمة", desc: "قيّم صعوبة التصدر من 0 إلى 100", icon: BarChart3, url: "/dashboard/keyword-difficulty", color: "from-blue-500 to-blue-400" },
   { title: "كشف نية البحث", desc: "صنّف الكلمات حسب نية المستخدم", icon: Compass, url: "/dashboard/search-intent", color: "from-emerald-500 to-emerald-400" },
   { title: "مولد هيكل المقال", desc: "أنشئ هيكل مقال محسّن لـ SEO", icon: FileText, url: "/dashboard/article-outline", color: "from-violet-500 to-violet-400" },
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
 
       {/* Tools Grid */}
       <div>
-        <h2 className="text-lg font-bold mb-4">أدوات SEO بالذكاء الاصطناعي</h2>
+        <h2 className="text-lg font-bold mb-4">أدوات SEO المتقدمة</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {tools.map((tool, i) => (
             <motion.div

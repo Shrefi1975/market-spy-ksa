@@ -45,7 +45,7 @@ const AnalyticsVisualSection: React.FC = () => {
               تقنية تحليل متقدمة
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground mb-12">
-              نستخدم أحدث تقنيات الذكاء الاصطناعي لتحليل السوق وتقديم رؤى استراتيجية دقيقة
+              نستخدم أحدث التقنيات لتحليل السوق وتقديم رؤى استراتيجية دقيقة
             </p>
           </motion.div>
 
