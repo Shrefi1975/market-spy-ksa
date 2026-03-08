@@ -53,25 +53,27 @@ const IndustryKeywords: React.FC = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative py-20 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
+      <section className="relative pt-32 pb-16 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]" />
           <div className="absolute bottom-10 left-10 w-60 h-60 bg-primary rounded-full blur-[100px]" />
         </div>
         <div className="container mx-auto px-4 relative z-10">
-          <Link to="/industries" className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-6 transition-colors">
+          <Link to="/industries" className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" />
             العودة لمكتبة القطاعات
           </Link>
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-5 mb-6">
             <span className="text-5xl">{industry.icon}</span>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold">كلمات مفتاحية عربية لـ{industry.nameAr}</h1>
-              <p className="text-lg text-primary-foreground/70 mt-2">Arabic Keywords for {industry.nameEn}</p>
+              <h1 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-2">
+                كلمات مفتاحية عربية لـ{industry.nameAr}
+              </h1>
+              <p className="text-lg text-primary-foreground/60 mt-1">Arabic Keywords for {industry.nameEn}</p>
             </div>
           </div>
-          <p className="text-primary-foreground/80 max-w-3xl text-lg leading-relaxed">{industry.description}</p>
-          <div className="mt-8">
+          <p className="text-primary-foreground/75 max-w-3xl text-lg leading-loose mt-4">{industry.description}</p>
+          <div className="mt-10">
             <Link to="/auth">
               <Button className="gradient-bg h-12 px-8 text-base">
                 <Search className="w-5 h-5 ml-2" />

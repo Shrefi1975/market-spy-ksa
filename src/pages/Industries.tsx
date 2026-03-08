@@ -18,15 +18,20 @@ const Industries: React.FC = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative py-20 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-10 py-[42px]">
+      <section className="relative pt-32 pb-20 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-20 w-80 h-80 bg-primary rounded-full blur-[120px]" />
           <div className="absolute bottom-10 left-20 w-60 h-60 bg-primary rounded-full blur-[100px]" />
         </div>
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 py-0">مكتبة الكلمات المفتاحية العربية حسب القطاع</h1>
-          <p className="text-primary-foreground/70 text-lg max-w-2xl mx-auto leading-relaxed">
+          <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">
+            مكتبة الكلمات المفتاحية العربية
+            <br />
+            <span className="text-primary">حسب القطاع</span>
+          </h1>
+          <p className="text-primary-foreground/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mt-4">
             اكتشف الكلمات المفتاحية الأكثر بحثاً في {industries.length} قطاع عربي رئيسي.
+            <br className="hidden md:block" />
             كلمات خدمية، تجارية، وسؤالية مخصصة لكل سوق عربي.
           </p>
         </div>
