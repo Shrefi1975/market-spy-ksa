@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { industries } from "@/data/industries";
 import Navbar from "@/components/Navbar";
+import heroIndustries from "@/assets/hero-industries.jpg";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,10 +19,10 @@ const Industries: React.FC = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 right-20 w-80 h-80 bg-primary rounded-full blur-[120px]" />
-          <div className="absolute bottom-10 left-20 w-60 h-60 bg-primary rounded-full blur-[100px]" />
+      <section className="relative pt-32 pb-20 text-primary-foreground overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroIndustries} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/75" />
         </div>
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">

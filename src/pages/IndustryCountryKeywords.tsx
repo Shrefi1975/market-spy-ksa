@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getIndustryBySlug, industries } from "@/data/industries";
 import { arabCountries } from "@/data/arabCountries";
+import heroIndustries from "@/assets/hero-industries.jpg";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -61,9 +62,10 @@ const IndustryCountryKeywords: React.FC = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-primary rounded-full blur-[120px]" />
+      <section className="relative pt-32 pb-16 text-primary-foreground overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroIndustries} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/75" />
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <Link to={`/industries/${industry.slug}`} className="inline-flex items-center gap-2 text-primary-foreground/70 hover:text-primary-foreground mb-8 transition-colors">
@@ -71,7 +73,6 @@ const IndustryCountryKeywords: React.FC = () => {
             العودة لـ{industry.nameAr}
           </Link>
           <div className="flex items-center gap-5 mb-6">
-            <span className="text-5xl">{country.flag}</span>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-2">
                 كلمات مفتاحية لـ{industry.nameAr} في {country.nameAr}
@@ -242,7 +243,6 @@ const IndustryCountryKeywords: React.FC = () => {
                     to={`/industries/${industry.slug}/${c.nameEn.toLowerCase().replace(/\s+/g, "-")}`}
                     className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-all text-sm font-medium"
                   >
-                    <span className="text-lg">{c.flag}</span>
                     <span>{c.nameAr}</span>
                   </Link>
                 ))}

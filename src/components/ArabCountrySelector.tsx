@@ -25,10 +25,7 @@ const ArabCountrySelector: React.FC<ArabCountrySelectorProps> = ({ value, onValu
               <SelectLabel className="font-bold text-primary">{regionLabels[region]}</SelectLabel>
               {group.map(c => (
                 <SelectItem key={c.code} value={c.code}>
-                  <span className="flex items-center gap-2">
-                    <span>{c.flag}</span>
-                    <span>{c.nameAr}</span>
-                  </span>
+                  {c.nameAr}
                 </SelectItem>
               ))}
             </SelectGroup>
