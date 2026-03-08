@@ -67,7 +67,8 @@ const About = () => {
           </motion.div>
         </div>
       </section>
-
+      <section className="py-24">
+        <div className="container mx-auto px-4">
           {/* Story Section with Animated Hero */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
