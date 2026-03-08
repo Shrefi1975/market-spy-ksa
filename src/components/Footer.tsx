@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { arabCountries, getArabCountriesByRegion, regionLabels, regionOrder } from "@/data/arabCountries";
+import { industries } from "@/data/industries";
 
 const Footer = () => {
   return (
@@ -68,6 +69,23 @@ const Footer = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Industry Keyword Pages for SEO */}
+        <div className="border-t border-primary-foreground/20 mt-8 pt-8">
+          <h4 className="text-lg font-bold mb-4 text-center">كلمات مفتاحية حسب القطاع ({industries.length} قطاع)</h4>
+          <div className="flex flex-wrap justify-center gap-2">
+            {industries.map(ind => (
+              <Link
+                key={ind.slug}
+                to={`/arabic-keywords-for-${ind.slug}`}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-primary-foreground/5 hover:bg-primary-foreground/15 text-primary-foreground/60 hover:text-primary-foreground text-xs transition-colors"
+              >
+                <span>{ind.icon}</span>
+                <span>{ind.nameAr}</span>
+              </Link>
+            ))}
           </div>
         </div>
 

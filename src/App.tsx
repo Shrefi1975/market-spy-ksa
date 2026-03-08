@@ -16,6 +16,9 @@ import Auth from "./pages/Auth";
 import Subscribe from "./pages/Subscribe";
 import CountryLanding from "./pages/CountryLanding";
 import NotFound from "./pages/NotFound";
+import Industries from "./pages/Industries";
+import IndustryKeywords from "./pages/IndustryKeywords";
+import IndustryCountryKeywords from "./pages/IndustryCountryKeywords";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import KeywordGenerator from "./pages/dashboard/KeywordGenerator";
@@ -48,6 +51,11 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/subscribe" element={<Subscribe />} />
             <Route path="/country/:countryCode" element={<CountryLanding />} />
+            
+            {/* Industry Keyword Pages */}
+            <Route path="/industries" element={<Industries />} />
+            <Route path="/arabic-keywords-for-:slug" element={<IndustryKeywords />} />
+            <Route path="/arabic-keywords-for-:slug/:country" element={<IndustryCountryKeywords />} />
             
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>
